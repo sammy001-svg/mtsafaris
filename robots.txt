@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Block admin and portal from indexing
+Disallow: /admin/
+Disallow: /portal/
+Disallow: /api/
+Disallow: /includes/
+Disallow: /assets/uploads/
+
+# Allow CSS, JS and images for rendering
+Allow: /assets/css/
+Allow: /assets/js/
+Allow: /assets/images/
+
+# Block query-string pages that duplicate content
+Disallow: /search.php?*type=
+Disallow: /packages.php?page=
+
+Sitemap: http://localhost/Mtsafaris/sitemap.php

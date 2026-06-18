@@ -1,0 +1,35 @@
+# Environment & config secrets
+includes/config.local.php
+.env
+*.env
+
+# Uploaded user files
+assets/uploads/
+uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# PHP error logs
+*.log
+error_log
+
+# Composer
+vendor/
+composer.lock
+
+# Node (if ever used)
+node_modules/
+
+# Temp / build
+*.tmp
+*.bak
+*.swp
