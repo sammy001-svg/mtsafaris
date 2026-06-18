@@ -562,7 +562,7 @@ INSERT INTO `settings` (`key`, `value`, `type`, `group`) VALUES
 
 -- Admin super user (password: Admin@2024!)
 INSERT INTO `users` (`first_name`, `last_name`, `email`, `password_hash`, `role`, `status`, `email_verified`) VALUES
-('Super', 'Admin', 'admin@mtsafaris.com', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', 'active', 1),
-('Travel', 'Manager', 'manager@mtsafaris.com', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'travel_manager', 'active', 1);
+('Super', 'Admin', 'admin@mtsafaris.com', '$2y$12$EFyXllxaAslvRx8gytzHvOYOFghnvKKvzpBq3kBfElTQFy05esaUq', 'super_admin', 'active', 1),
+('Travel', 'Manager', 'manager@mtsafaris.com', '$2y$12$EFyXllxaAslvRx8gytzHvOYOFghnvKKvzpBq3kBfElTQFy05esaUq', 'travel_manager', 'active', 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
