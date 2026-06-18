@@ -12,7 +12,8 @@
       "PowerShell(& \"C:\\\\xampp\\\\apache\\\\bin\\\\httpd.exe\" -t 2>&1)",
       "PowerShell(& \"C:\\\\xampp\\\\apache\\\\bin\\\\httpd.exe\" -k restart 2>&1)",
       "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root mtsafaris -e \"DESCRIBE users;\" 2>&1)",
-      "PowerShell(Get-Process -Name \"mysqld\" -ErrorAction SilentlyContinue)"
+      "PowerShell(Get-Process -Name \"mysqld\" -ErrorAction SilentlyContinue)",
+      "Bash(gh repo *)"
     ]
   }
 }

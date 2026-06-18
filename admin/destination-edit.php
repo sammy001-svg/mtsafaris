@@ -36,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$data['country']) $errors[] = 'Country is required.';
     if (!$data['slug'])    $data['slug'] = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $data['name']));
 
-    // Hero image upload
     if (!empty($_FILES['hero_image']['name'])) {
         $imgUrl = uploadImage($_FILES['hero_image'], 'destinations');
         if ($imgUrl) $data['hero_image'] = $imgUrl;
@@ -58,14 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect(url('admin/destinations.php'));
     }
 }
-$dest = $dest ?? [];
+
+$dest       = $dest ?? [];
 $highlights = implode("\n", jd($dest['highlights'] ?? null, []));
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $id ? 'Edit' : 'Add' ?> Destination — Admin | MT Safaris</title>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title><?= $id ? 'Edit' : 'New' ?> Destination — Admin | MT Safaris</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="<?= url('assets/css/admin.css') ?>">
 </head>
@@ -76,59 +76,117 @@ $highlights = implode("\n", jd($dest['highlights'] ?? null, []));
     <div class="admin-header-left">
       <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
       <div class="breadcrumb-admin">
+        <a href="<?= url('admin/') ?>">Admin</a>
+        <i class="fas fa-chevron-right"></i>
         <a href="<?= url('admin/destinations.php') ?>">Destinations</a>
-        <i class="fas fa-chevron-right" style="font-size:.65rem"></i>
-        <span><?= $id ? 'Edit' : 'New' ?></span>
+        <i class="fas fa-chevron-right"></i>
+        <span><?= $id ? h(excerpt($dest['name'] ?? 'Edit', 30)) : 'New Destination' ?></span>
       </div>
+    </div>
+    <div class="admin-header-right">
+      <?php if ($id && !empty($dest['slug'])): ?>
+      <a href="<?= url('destinations.php?slug=' . h($dest['slug'])) ?>" target="_blank"
+         class="btn-admin btn-admin-secondary btn-admin-sm">
+        <i class="fas fa-eye"></i> View Live
+      </a>
+      <?php endif; ?>
+      <a href="<?= url('admin/destinations.php') ?>" class="btn-admin btn-admin-secondary btn-admin-sm">
+        <i class="fas fa-arrow-left"></i> Back
+      </a>
     </div>
   </header>
 
   <div class="admin-content">
+
     <?php if ($errors): ?>
-    <div class="flash-msg flash-danger" style="margin-bottom:16px">
+    <div class="flash-msg flash-danger">
       <i class="fas fa-exclamation-circle"></i>
-      <span><?= implode(' ', array_map('h', $errors)) ?></span>
+      <span><?= implode(' &nbsp;·&nbsp; ', array_map('h', $errors)) ?></span>
     </div>
     <?php endif; ?>
 
-    <div class="admin-page-title"><?= $id ? 'Edit Destination' : 'Add New Destination' ?></div>
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-header-info">
+        <div class="page-title"><?= $id ? 'Edit Destination' : 'New Destination' ?></div>
+        <div class="page-subtitle"><?= $id ? 'Update destination details, climate info, and SEO settings' : 'Add a new destination to your catalogue' ?></div>
+      </div>
+    </div>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" id="destForm">
       <?= csrfField() ?>
+
+      <!-- Sticky save bar -->
+      <div class="save-bar">
+        <div style="display:flex;align-items:center;gap:10px">
+          <label class="admin-toggle" style="margin:0">
+            <input type="checkbox" name="is_active" <?= ($dest['is_active'] ?? 1) ? 'checked' : '' ?>>
+            <span class="admin-toggle-slider"></span>
+            <span class="admin-toggle-label">Active</span>
+          </label>
+          <label class="admin-toggle" style="margin:0">
+            <input type="checkbox" name="is_featured" <?= ($dest['is_featured'] ?? 0) ? 'checked' : '' ?>>
+            <span class="admin-toggle-slider"></span>
+            <span class="admin-toggle-label">Featured</span>
+          </label>
+        </div>
+        <div style="display:flex;gap:10px">
+          <a href="<?= url('admin/destinations.php') ?>" class="btn-admin btn-admin-secondary">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+          <button type="submit" class="btn-admin btn-admin-primary">
+            <i class="fas fa-save"></i> <?= $id ? 'Update Destination' : 'Create Destination' ?>
+          </button>
+        </div>
+      </div>
+
       <div style="display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start">
 
-        <!-- Left -->
+        <!-- Left column -->
         <div style="display:flex;flex-direction:column;gap:20px">
 
           <!-- Basic Info -->
           <div class="admin-card">
-            <div class="admin-card-header"><i class="fas fa-map-marker-alt" style="color:var(--clr-gold)"></i> Basic Information</div>
+            <div class="admin-card-header">
+              <span style="font-weight:600;color:var(--clr-primary);display:flex;align-items:center;gap:8px">
+                <i class="fas fa-map-marker-alt" style="color:var(--clr-gold)"></i> Basic Information
+              </span>
+            </div>
             <div class="admin-card-body">
               <div class="form-group">
-                <label class="form-label">Destination Name <span class="text-danger">*</span></label>
-                <input type="text" name="name" id="destName" value="<?= h($dest['name'] ?? '') ?>"
+                <label class="form-label">Destination Name <span style="color:var(--clr-danger)">*</span></label>
+                <input type="text" name="name" id="destName"
+                       value="<?= h($dest['name'] ?? '') ?>"
                        class="form-control" required placeholder="e.g. Masai Mara">
               </div>
+
               <div class="form-group">
-                <label class="form-label">Slug <span class="text-danger">*</span></label>
-                <input type="text" name="slug" id="destSlug" value="<?= h($dest['slug'] ?? '') ?>"
-                       class="form-control" placeholder="masai-mara">
+                <label class="form-label">URL Slug</label>
+                <div class="input-group">
+                  <i class="ig-icon fas fa-link"></i>
+                  <input type="text" name="slug" id="destSlug"
+                         value="<?= h($dest['slug'] ?? '') ?>"
+                         class="form-control" placeholder="masai-mara">
+                </div>
               </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+              <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label">Country <span class="text-danger">*</span></label>
-                  <input type="text" name="country" value="<?= h($dest['country'] ?? '') ?>" class="form-control" required>
+                  <label class="form-label">Country <span style="color:var(--clr-danger)">*</span></label>
+                  <input type="text" name="country" value="<?= h($dest['country'] ?? '') ?>"
+                         class="form-control" required placeholder="Kenya">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Continent</label>
                   <select name="continent" class="form-control">
                     <option value="">Select…</option>
-                    <?php foreach (['Africa','Asia','Europe','Americas','Oceania','Middle East'] as $c): ?>
-                    <option value="<?= $c ?>" <?= ($dest['continent'] ?? '') === $c ? 'selected' : '' ?>><?= $c ?></option>
+                    <?php foreach (['Africa','Asia','Europe','Americas','Oceania','Middle East'] as $cont): ?>
+                    <option value="<?= $cont ?>" <?= ($dest['continent'] ?? '') === $cont ? 'selected' : '' ?>><?= $cont ?></option>
                     <?php endforeach; ?>
                   </select>
                 </div>
               </div>
+
               <div class="form-group">
                 <label class="form-label">Region</label>
                 <select name="region_id" class="form-control">
@@ -138,38 +196,55 @@ $highlights = implode("\n", jd($dest['highlights'] ?? null, []));
                   <?php endforeach; ?>
                 </select>
               </div>
+
               <div class="form-group">
                 <label class="form-label">Description</label>
-                <textarea name="description" class="form-control" rows="5"><?= h($dest['description'] ?? '') ?></textarea>
+                <textarea name="description" class="form-control" rows="5"
+                          placeholder="Rich description of the destination for visitors…"><?= h($dest['description'] ?? '') ?></textarea>
               </div>
+
               <div class="form-group">
-                <label class="form-label">Highlights <small style="color:var(--clr-muted)">(one per line)</small></label>
-                <textarea name="highlights" class="form-control" rows="5" placeholder="Great Migration&#10;Big Five&#10;Endless plains"><?= h($highlights) ?></textarea>
+                <label class="form-label">Highlights <span class="form-hint" style="display:inline">(one per line)</span></label>
+                <textarea name="highlights" class="form-control" rows="6"
+                          placeholder="Great Migration&#10;Big Five&#10;Maasai Culture&#10;Endless plains"><?= h($highlights) ?></textarea>
               </div>
             </div>
           </div>
 
-          <!-- Climate & Travel Info -->
+          <!-- Climate -->
           <div class="admin-card">
-            <div class="admin-card-header"><i class="fas fa-cloud-sun" style="color:var(--clr-sky)"></i> Climate & Travel</div>
+            <div class="admin-card-header">
+              <span style="font-weight:600;color:var(--clr-primary);display:flex;align-items:center;gap:8px">
+                <i class="fas fa-cloud-sun" style="color:#0ea5e9"></i> Climate &amp; Travel
+              </span>
+            </div>
             <div class="admin-card-body">
               <div class="form-group">
                 <label class="form-label">Climate Info</label>
-                <textarea name="climate_info" class="form-control" rows="3"><?= h($dest['climate_info'] ?? '') ?></textarea>
+                <textarea name="climate_info" class="form-control" rows="3"
+                          placeholder="Describe the climate, seasons, and weather patterns…"><?= h($dest['climate_info'] ?? '') ?></textarea>
               </div>
               <div class="form-group">
                 <label class="form-label">Best Time to Visit</label>
                 <input type="text" name="best_time" value="<?= h($dest['best_time'] ?? '') ?>"
                        class="form-control" placeholder="e.g. July – October (Great Migration)">
               </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">Latitude</label>
-                  <input type="number" name="latitude" value="<?= h($dest['latitude'] ?? '') ?>" step="0.0000001" class="form-control" placeholder="-1.4061">
+                  <div class="input-group">
+                    <i class="ig-icon fas fa-location-dot"></i>
+                    <input type="number" name="latitude" value="<?= h($dest['latitude'] ?? '') ?>"
+                           step="0.0000001" class="form-control" placeholder="-1.4061">
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="form-label">Longitude</label>
-                  <input type="number" name="longitude" value="<?= h($dest['longitude'] ?? '') ?>" step="0.0000001" class="form-control" placeholder="35.0027">
+                  <div class="input-group">
+                    <i class="ig-icon fas fa-location-dot"></i>
+                    <input type="number" name="longitude" value="<?= h($dest['longitude'] ?? '') ?>"
+                           step="0.0000001" class="form-control" placeholder="35.0027">
+                  </div>
                 </div>
               </div>
             </div>
@@ -177,72 +252,113 @@ $highlights = implode("\n", jd($dest['highlights'] ?? null, []));
 
           <!-- SEO -->
           <div class="admin-card">
-            <div class="admin-card-header"><i class="fas fa-search" style="color:var(--clr-sky)"></i> SEO</div>
+            <div class="admin-card-header">
+              <span style="font-weight:600;color:var(--clr-primary);display:flex;align-items:center;gap:8px">
+                <i class="fas fa-search" style="color:#0ea5e9"></i> SEO Settings
+              </span>
+            </div>
             <div class="admin-card-body">
               <div class="form-group">
-                <label class="form-label">Meta Title <small id="metaTitleCount" style="color:var(--clr-muted)">0/60</small></label>
-                <input type="text" name="meta_title" id="metaTitle" value="<?= h($dest['meta_title'] ?? '') ?>" class="form-control" maxlength="70">
+                <label class="form-label">
+                  Meta Title
+                  <span id="metaTitleCount" class="form-hint" style="display:inline;float:right">0/60</span>
+                </label>
+                <input type="text" name="meta_title" id="metaTitle"
+                       value="<?= h($dest['meta_title'] ?? '') ?>"
+                       class="form-control" maxlength="70"
+                       placeholder="Leave blank to use destination name">
               </div>
               <div class="form-group">
-                <label class="form-label">Meta Description <small id="metaDescCount" style="color:var(--clr-muted)">0/160</small></label>
-                <textarea name="meta_description" id="metaDesc" class="form-control" rows="3" maxlength="200"><?= h($dest['meta_description'] ?? '') ?></textarea>
+                <label class="form-label">
+                  Meta Description
+                  <span id="metaDescCount" class="form-hint" style="display:inline;float:right">0/160</span>
+                </label>
+                <textarea name="meta_description" id="metaDesc"
+                          class="form-control" rows="3" maxlength="200"
+                          placeholder="150-160 character SEO description…"><?= h($dest['meta_description'] ?? '') ?></textarea>
+              </div>
+
+              <!-- Google preview -->
+              <div class="seo-preview" id="seoPreview">
+                <div class="seo-preview-url">mtsafaris.com/destinations.php?slug=<?= h($dest['slug'] ?? 'slug') ?></div>
+                <div class="seo-preview-title" id="seoTitle"><?= h($dest['meta_title'] ?: ($dest['name'] ?? 'Destination Name')) ?></div>
+                <div class="seo-preview-desc" id="seoDesc"><?= h($dest['meta_description'] ?? 'Meta description will appear here…') ?></div>
               </div>
             </div>
           </div>
-        </div>
+
+        </div><!-- /left -->
 
         <!-- Right sidebar -->
         <div style="display:flex;flex-direction:column;gap:20px">
 
-          <!-- Publish -->
+          <!-- Publish settings -->
           <div class="admin-card">
-            <div class="admin-card-header"><i class="fas fa-cog" style="color:var(--clr-gold)"></i> Publish</div>
-            <div class="admin-card-body">
-              <label class="admin-toggle" style="margin-bottom:12px">
+            <div class="admin-card-header">
+              <span style="font-weight:600;color:var(--clr-primary);display:flex;align-items:center;gap:8px">
+                <i class="fas fa-cog" style="color:var(--clr-gold)"></i> Settings
+              </span>
+            </div>
+            <div class="admin-card-body" style="display:flex;flex-direction:column;gap:14px">
+              <label class="admin-toggle">
                 <input type="checkbox" name="is_active" <?= ($dest['is_active'] ?? 1) ? 'checked' : '' ?>>
                 <span class="admin-toggle-slider"></span>
-                <span>Active / Visible on site</span>
+                <span class="admin-toggle-label">Active &amp; visible on site</span>
               </label>
               <label class="admin-toggle">
                 <input type="checkbox" name="is_featured" <?= ($dest['is_featured'] ?? 0) ? 'checked' : '' ?>>
                 <span class="admin-toggle-slider"></span>
-                <span>Featured on homepage</span>
+                <span class="admin-toggle-label">Featured on homepage</span>
               </label>
-              <div class="form-group" style="margin-top:14px">
+              <div class="form-group" style="margin:0">
                 <label class="form-label">Sort Order</label>
-                <input type="number" name="sort_order" value="<?= (int)($dest['sort_order'] ?? 0) ?>" class="form-control" min="0">
+                <input type="number" name="sort_order"
+                       value="<?= (int)($dest['sort_order'] ?? 0) ?>"
+                       class="form-control" min="0">
+                <span class="form-hint">Lower = appears first</span>
               </div>
             </div>
           </div>
 
           <!-- Hero Image -->
           <div class="admin-card">
-            <div class="admin-card-header"><i class="fas fa-image" style="color:var(--clr-gold)"></i> Hero Image</div>
+            <div class="admin-card-header">
+              <span style="font-weight:600;color:var(--clr-primary);display:flex;align-items:center;gap:8px">
+                <i class="fas fa-image" style="color:var(--clr-gold)"></i> Hero Image
+              </span>
+            </div>
             <div class="admin-card-body">
               <?php if (!empty($dest['hero_image'])): ?>
-              <img src="<?= h($dest['hero_image']) ?>" alt="Hero" style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:12px">
+              <img src="<?= h($dest['hero_image']) ?>" alt="Hero"
+                   style="width:100%;height:150px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:12px;border:1.5px solid var(--clr-border)">
               <?php endif; ?>
-              <input type="file" name="hero_image" accept="image/*" class="form-control" onchange="previewImg(this,'heroPreview')">
-              <img id="heroPreview" src="" alt="" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-top:10px;display:none">
+              <img id="heroPreview" src="" alt=""
+                   style="width:100%;height:130px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:10px;display:none;border:1.5px solid var(--clr-border)">
+              <input type="file" name="hero_image" accept="image/*"
+                     class="form-control" onchange="previewImg(this,'heroPreview')">
+              <span class="form-hint">Recommended: 1920×1080px JPG. Max 5MB.</span>
             </div>
           </div>
 
-          <!-- Actions -->
+          <!-- Save actions -->
           <div class="admin-card">
             <div class="admin-card-body" style="display:flex;flex-direction:column;gap:10px">
               <button type="submit" class="btn-admin btn-admin-primary btn-block">
                 <i class="fas fa-save"></i> <?= $id ? 'Update Destination' : 'Create Destination' ?>
               </button>
-              <a href="<?= url('admin/destinations.php') ?>" class="btn-admin btn-block" style="background:#f1f5f9;color:var(--clr-primary);text-align:center">
+              <a href="<?= url('admin/destinations.php') ?>"
+                 class="btn-admin btn-admin-secondary btn-block" style="text-align:center">
                 <i class="fas fa-arrow-left"></i> Back to List
               </a>
             </div>
           </div>
-        </div>
+
+        </div><!-- /right -->
       </div>
     </form>
   </div>
 </div>
+
 <script src="<?= url('assets/js/admin.js') ?>"></script>
 <script>
 function previewImg(input, previewId) {
@@ -253,23 +369,37 @@ function previewImg(input, previewId) {
     reader.readAsDataURL(input.files[0]);
   }
 }
-// Slug generator
-document.getElementById('destName')?.addEventListener('input', function() {
-  const slugEl = document.getElementById('destSlug');
-  if (!slugEl.dataset.manual) {
-    slugEl.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  }
-});
-document.getElementById('destSlug')?.addEventListener('input', function() { this.dataset.manual = '1'; });
 
-// Meta counters
-['metaTitle:metaTitleCount:60','metaDesc:metaDescCount:160'].forEach(s => {
-  const [fid, cid, max] = s.split(':');
-  const field = document.getElementById(fid), cnt = document.getElementById(cid);
-  if (!field || !cnt) return;
-  const update = () => { cnt.textContent = field.value.length + '/' + max; cnt.style.color = field.value.length > max ? 'var(--clr-danger)' : 'var(--clr-muted)'; };
-  field.addEventListener('input', update); update();
+// Slug generator
+const nameEl = document.getElementById('destName');
+const slugEl = document.getElementById('destSlug');
+nameEl?.addEventListener('input', function() {
+  if (!slugEl.dataset.manual)
+    slugEl.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 });
+slugEl?.addEventListener('input', function() { this.dataset.manual = '1'; });
+
+// Meta counters + SEO preview
+function updateSeo() {
+  const title = document.getElementById('metaTitle')?.value;
+  const desc  = document.getElementById('metaDesc')?.value;
+  const len1  = title?.length || 0;
+  const len2  = desc?.length  || 0;
+
+  const titleCnt = document.getElementById('metaTitleCount');
+  const descCnt  = document.getElementById('metaDescCount');
+  if (titleCnt) { titleCnt.textContent = len1+'/60'; titleCnt.style.color = len1 > 60 ? 'var(--clr-danger)' : 'var(--clr-muted)'; }
+  if (descCnt)  { descCnt.textContent  = len2+'/160'; descCnt.style.color  = len2 > 160 ? 'var(--clr-danger)' : 'var(--clr-muted)'; }
+
+  const seoTitle = document.getElementById('seoTitle');
+  const seoDesc  = document.getElementById('seoDesc');
+  if (seoTitle) seoTitle.textContent = title || nameEl?.value || 'Destination Name';
+  if (seoDesc)  seoDesc.textContent  = desc  || 'Meta description will appear here…';
+}
+
+document.getElementById('metaTitle')?.addEventListener('input', updateSeo);
+document.getElementById('metaDesc')?.addEventListener('input', updateSeo);
+updateSeo();
 </script>
 </body>
 </html>
