@@ -26,6 +26,7 @@ foreach ($faqs as $faq) {
     $grouped[$faq['category']][] = $faq;
 }
 
+$jsonLd = schemaFaqPage($faqs);
 require_once 'includes/header.php';
 ?>
 

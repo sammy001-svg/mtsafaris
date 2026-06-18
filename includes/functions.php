@@ -475,6 +475,78 @@ function schemaBreadcrumb(array $items): string {
     return jsonLd(['@context'=>'https://schema.org','@type'=>'BreadcrumbList','itemListElement'=>$list]);
 }
 
+/**
+ * TouristAttraction schema for destination detail pages.
+ */
+function schemaDestination(array $dest): string {
+    $data = [
+        '@context'    => 'https://schema.org',
+        '@type'       => 'TouristAttraction',
+        'name'        => $dest['name'],
+        'description' => excerpt(strip_tags($dest['description'] ?? ''), 300) ?: 'Discover ' . $dest['name'] . ' with MT Safaris.',
+        'url'         => APP_URL . '/destinations.php?slug=' . $dest['slug'],
+        'provider'    => ['@id' => APP_URL . '/#organization'],
+    ];
+    if (!empty($dest['hero_image'])) {
+        $data['image'] = $dest['hero_image'];
+    }
+    if (!empty($dest['latitude']) && !empty($dest['longitude'])) {
+        $data['geo'] = [
+            '@type'     => 'GeoCoordinates',
+            'latitude'  => (float)$dest['latitude'],
+            'longitude' => (float)$dest['longitude'],
+        ];
+        $data['hasMap'] = 'https://www.google.com/maps?q=' . $dest['latitude'] . ',' . $dest['longitude'];
+    }
+    if (!empty($dest['country'])) {
+        $data['containedInPlace'] = ['@type' => 'Country', 'name' => $dest['country']];
+    }
+    if (!empty($dest['best_time'])) {
+        $data['tourBookingPage'] = APP_URL . '/packages.php';
+        $data['additionalProperty'] = [
+            '@type' => 'PropertyValue',
+            'name'  => 'Best Time to Visit',
+            'value' => $dest['best_time'],
+        ];
+    }
+    return jsonLd($data);
+}
+
+/**
+ * FAQPage schema — pass array of rows with 'question' and 'answer' keys.
+ */
+function schemaFaqPage(array $faqs): string {
+    $items = array_map(fn($f) => [
+        '@type'          => 'Question',
+        'name'           => $f['question'],
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['answer'])],
+    ], $faqs);
+    return jsonLd(['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $items]);
+}
+
+/**
+ * ItemList schema for package/destination listing pages.
+ */
+function schemaItemList(array $items, string $pageUrl, string $listName = 'Tour Packages'): string {
+    $elements = [];
+    foreach ($items as $i => $item) {
+        $elements[] = [
+            '@type'    => 'ListItem',
+            'position' => $i + 1,
+            'name'     => $item['title'] ?? $item['name'] ?? '',
+            'url'      => isset($item['slug']) ? APP_URL . '/package-detail.php?slug=' . $item['slug'] : '',
+        ];
+    }
+    return jsonLd([
+        '@context'        => 'https://schema.org',
+        '@type'           => 'ItemList',
+        'name'            => $listName,
+        'url'             => $pageUrl,
+        'numberOfItems'   => count($items),
+        'itemListElement' => $elements,
+    ]);
+}
+
 // =============================================================
 // URL HELPERS
 // =============================================================

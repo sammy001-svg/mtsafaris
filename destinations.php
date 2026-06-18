@@ -16,9 +16,16 @@ if ($slug) {
     $gallery    = jd($dest['gallery']    ?? '[]') ?: [];
     $nearby     = DB::rows("SELECT id,name,slug,country,hero_image,(SELECT COUNT(*) FROM packages WHERE destination_id=destinations.id AND is_active=1) AS pkg_count FROM destinations WHERE id!=? AND is_active=1 ORDER BY is_featured DESC, RAND() LIMIT 4", [$dest['id']]);
 
-    $pageTitle       = ($dest['meta_title']       ?: h($dest['name']).' — MT Safaris');
-    $pageDescription = ($dest['meta_description'] ?: 'Explore '.$dest['name'].', '.$dest['country'].' with MT Safaris.');
+    $pageTitle       = ($dest['meta_title']       ?: $dest['name'] . ' — MT Safaris');
+    $pageDescription = ($dest['meta_description'] ?: 'Explore ' . $dest['name'] . ', ' . $dest['country'] . ' with MT Safaris. Book tours, safaris, and travel packages.');
+    $pageImage       = $dest['hero_image'] ?? '';
     $headerClass     = 'transparent';
+    $jsonLd = schemaDestination($dest)
+            . schemaBreadcrumb([
+                ['name' => 'Home',         'url' => url()],
+                ['name' => 'Destinations', 'url' => url('destinations.php')],
+                ['name' => $dest['name'],  'url' => url('destinations.php?slug=' . $dest['slug'])],
+              ]);
     require_once 'includes/header.php';
 ?>
 

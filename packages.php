@@ -3,6 +3,14 @@ $pageTitle       = 'Tour Packages — Safaris, Holidays, Honeymoon & More';
 $pageDescription = 'Browse MT Safaris premium tour packages — African safaris, holiday packages, luxury tours, honeymoon escapes, corporate travel and custom adventures.';
 $headerClass     = 'solid';
 
+require_once 'includes/config.php';
+require_once 'includes/functions.php';
+
+// Fetch featured packages for structured data before the header include
+$_featuredForSchema = DB::rows("SELECT title, slug FROM packages WHERE is_active=1 AND is_featured=1 ORDER BY sort_order LIMIT 12");
+$jsonLd = schemaItemList($_featuredForSchema, url('packages.php'), 'Tour Packages — MT Safaris');
+unset($_featuredForSchema);
+
 require_once 'includes/header.php';
 
 $categories = getCategories();
