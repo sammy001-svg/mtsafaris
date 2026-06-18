@@ -48,7 +48,12 @@ $pageTitle    = 'Booking '.$booking['reference'].' | MT Safaris';
 <div class="portal-layout">
   <?php include __DIR__ . '/includes/sidebar.php'; ?>
   <main class="portal-main">
-    <?php echo renderFlash(); ?>
+    <?php $flash = getFlash(); if ($flash): ?>
+    <div class="flash-msg flash-<?= h($flash['type']) ?>" style="margin-bottom:20px">
+      <i class="fas fa-<?= $flash['type']==='success'?'check-circle':'exclamation-circle' ?>"></i>
+      <span><?= h($flash['message']) ?></span>
+    </div>
+    <?php endif; ?>
     <div class="portal-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
       <div>
         <a href="<?= url('portal/bookings.php') ?>" style="color:var(--clr-muted);font-size:.875rem;text-decoration:none;display:block;margin-bottom:6px"><i class="fas fa-arrow-left"></i> Back to Bookings</a>
@@ -220,10 +225,6 @@ $pageTitle    = 'Booking '.$booking['reference'].' | MT Safaris';
       </div>
     </form>
   </div>
-</div>
-      </div>
-    </div>
-  </main>
 </div>
 <script src="<?= url('assets/js/main.js') ?>"></script>
 </body>
