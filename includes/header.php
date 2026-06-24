@@ -59,7 +59,7 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
 
       <!-- Logo -->
       <a href="<?= url() ?>" class="logo">
-        <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:58px;width:auto">
+        <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" class="site-logo-img">
       </a>
 
       <!-- Main Nav -->
@@ -162,7 +162,7 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
   <button class="close-btn"><i class="fas fa-times"></i></button>
   <div style="margin-bottom:24px">
     <div class="logo">
-      <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:52px;width:auto">
+      <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" class="site-logo-img">
     </div>
   </div>
   <a href="<?= url() ?>">Home</a>
