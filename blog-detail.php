@@ -90,7 +90,7 @@ require_once 'includes/header.php';
 
 <?php if ($post['featured_image']): ?>
 <div style="width:100%;max-height:520px;overflow:hidden">
-  <img src="<?= h($post['featured_image']) ?>" alt="<?= h($post['title']) ?>" style="width:100%;height:520px;object-fit:cover">
+  <img src="<?= h($post['featured_image']) ?>" alt="<?= h($post['title']) ?>" style="width:100%;height:520px;object-fit:cover" decoding="async" fetchpriority="high">
 </div>
 <?php endif; ?>
 
@@ -206,7 +206,7 @@ require_once 'includes/header.php';
           <div class="card-body">
             <?php foreach ($recentPosts as $rp): if ($rp['id']==$post['id']) continue; ?>
             <div style="display:flex;gap:12px;margin-bottom:16px">
-              <img src="<?= h($rp['featured_image']?:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=60') ?>" style="width:64px;height:56px;object-fit:cover;border-radius:var(--radius)" alt="">
+              <img src="<?= h($rp['featured_image']?:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=60') ?>" style="width:64px;height:56px;object-fit:cover;border-radius:var(--radius)" alt="" loading="lazy" decoding="async">
               <div>
                 <a href="<?= url('blog-detail.php?slug='.h($rp['slug'])) ?>" style="color:var(--clr-primary);font-size:.8125rem;font-weight:600;line-height:1.4;text-decoration:none;display:block;margin-bottom:4px"><?= h(excerpt($rp['title'],65)) ?></a>
                 <span style="color:var(--clr-muted);font-size:.7rem"><?= formatDate($rp['published_at']??$rp['created_at'],'M j, Y') ?></span>

@@ -63,7 +63,7 @@ $featured = DB::row("SELECT bp.*, bc.name AS category_name, CONCAT(u.first_name,
           <div style="display:grid;grid-template-columns:1fr 1fr">
             <div style="aspect-ratio:1;overflow:hidden">
               <img src="<?= h($featured['featured_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=700&q=85') ?>"
-                   alt="<?= h($featured['title']) ?>" style="width:100%;height:100%;object-fit:cover">
+                   alt="<?= h($featured['title']) ?>" style="width:100%;height:100%;object-fit:cover" decoding="async" fetchpriority="high">
             </div>
             <div style="padding:36px;display:flex;flex-direction:column;justify-content:center">
               <span style="background:var(--clr-gold);color:#fff;font-size:.68rem;font-weight:700;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:14px;text-transform:uppercase;letter-spacing:.08em">Featured</span>
@@ -104,7 +104,7 @@ $featured = DB::row("SELECT bp.*, bc.name AS category_name, CONCAT(u.first_name,
             <div class="blog-card-img">
               <a href="<?= url('blog-detail.php?slug=' . h($post['slug'])) ?>">
                 <img src="<?= h($post['featured_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&q=80') ?>"
-                     alt="<?= h($post['title']) ?>" loading="lazy">
+                     alt="<?= h($post['title']) ?>" loading="lazy" decoding="async">
               </a>
             </div>
             <div class="blog-card-body">
@@ -162,7 +162,7 @@ $featured = DB::row("SELECT bp.*, bc.name AS category_name, CONCAT(u.first_name,
             foreach ($popular as $p): ?>
             <a href="<?= url('blog-detail.php?slug='.h($p['slug'])) ?>" style="display:flex;gap:12px;margin-bottom:14px;text-decoration:none">
               <img src="<?= h($p['featured_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=100&q=70') ?>"
-                   style="width:60px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0" alt="">
+                   style="width:60px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0" alt="" loading="lazy" decoding="async">
               <div>
                 <p style="font-size:.8rem;font-weight:600;color:var(--clr-primary);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden"><?= h($p['title']) ?></p>
                 <span style="font-size:.72rem;color:var(--clr-muted)"><i class="far fa-eye"></i> <?= number_format($p['view_count']) ?></span>

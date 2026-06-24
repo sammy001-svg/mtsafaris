@@ -44,7 +44,7 @@ require_once 'includes/header.php';
 <!-- Package Hero -->
 <div class="package-hero" id="pkgHero">
   <img src="<?= h($gallery[0] ?? $pkg['hero_image'] ?? 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1400&q=85') ?>"
-       alt="<?= h($pkg['title']) ?>" id="galleryMainImg" class="gallery-main-img">
+       alt="<?= h($pkg['title']) ?>" id="galleryMainImg" class="gallery-main-img" fetchpriority="high" decoding="async">
   <div class="package-hero-overlay"></div>
   <div class="container">
     <div class="package-hero-content">
@@ -69,7 +69,7 @@ require_once 'includes/header.php';
       <div class="gallery-thumbs" style="margin-top:20px">
         <?php foreach (array_slice($gallery, 0, 5) as $i => $img): ?>
         <div class="gallery-thumb <?= $i===0?'active':'' ?>" onclick="document.getElementById('galleryMainImg').src='<?= h($img) ?>';this.parentElement.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active')">
-          <img src="<?= h($img) ?>" alt="Gallery <?= $i+1 ?>">
+          <img src="<?= h($img) ?>" alt="Gallery <?= $i+1 ?>" loading="lazy" decoding="async">
         </div>
         <?php endforeach; ?>
         <?php if (count($gallery) > 5): ?>
@@ -390,7 +390,7 @@ require_once 'includes/header.php';
       <article class="package-card" data-animate>
         <div class="package-card-img">
           <a href="<?= url('package-detail.php?slug=' . h($r['slug'])) ?>">
-            <img src="<?= h($r['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>" alt="<?= h($r['title']) ?>" loading="lazy">
+            <img src="<?= h($r['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>" alt="<?= h($r['title']) ?>" loading="lazy" decoding="async">
           </a>
           <span class="package-badge"><?= ucfirst(h($r['type'])) ?></span>
         </div>

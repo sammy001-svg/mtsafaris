@@ -257,10 +257,10 @@ $cats    = DB::rows("SELECT c.*, (SELECT COUNT(*) FROM packages WHERE category_i
                 <label class="form-label">Colour</label>
                 <div style="display:flex;gap:8px;align-items:center">
                   <input type="color" name="color" id="catColor"
-                         value="<?= h($editCat['color'] ?? '#0D3B66') ?>"
+                         value="<?= h($editCat['color'] ?? '#0C2614') ?>"
                          style="height:40px;width:48px;padding:3px;border:1.5px solid var(--clr-border);border-radius:var(--radius-sm);cursor:pointer;background:#fff">
                   <input type="text" id="colorHex"
-                         value="<?= h($editCat['color'] ?? '#0D3B66') ?>"
+                         value="<?= h($editCat['color'] ?? '#0C2614') ?>"
                          class="form-control" style="font-family:monospace;font-size:.82rem" maxlength="7" readonly>
                 </div>
               </div>

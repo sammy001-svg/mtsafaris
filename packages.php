@@ -189,7 +189,7 @@ $packages = $result['rows'];
             <div class="package-card-img">
               <a href="<?= url('package-detail.php?slug=' . h($pkg['slug'])) ?>">
                 <img src="<?= h($pkg['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>"
-                     alt="<?= h($pkg['title']) ?>" loading="lazy">
+                     alt="<?= h($pkg['title']) ?>" loading="lazy" decoding="async">
               </a>
               <span class="package-badge <?= $pkg['type']==='luxury'?'package-badge-blue':'' ?>"><?= ucfirst(h($pkg['type'])) ?></span>
               <?php if ($pkg['sale_price'] && $pkg['sale_price'] < $pkg['base_price']): ?>

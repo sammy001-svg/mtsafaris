@@ -50,8 +50,8 @@ $issuedDate = formatDate($booking['created_at'], 'M j, Y');
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
   <style>
     :root {
-      --blue: #0D3B66;
-      --gold: #C9A84C;
+      --blue: #0C2614;
+      --gold: #F6A229;
       --text: #1a202c;
       --muted: #718096;
       --border: #e2e8f0;
@@ -77,7 +77,7 @@ $issuedDate = formatDate($booking['created_at'], 'M j, Y');
       padding: 9px 20px; border-radius: 8px; font-size: .82rem; font-weight: 600; cursor: pointer; border: none; transition: all .2s;
     }
     .btn-print { background: var(--gold); color: #fff; }
-    .btn-print:hover { background: #b8860b; }
+    .btn-print:hover { background: #d48920; }
     .btn-back { background: rgba(255,255,255,.12); color: #fff; text-decoration: none; }
     .btn-back:hover { background: rgba(255,255,255,.2); }
 

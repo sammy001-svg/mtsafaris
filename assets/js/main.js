@@ -6,14 +6,59 @@
   'use strict';
 
   // ============================================================
-  // PAGE LOADER
+  // PAGE LOADER — hide on DOMContentLoaded, not window.load,
+  // so the spinner disappears as soon as the HTML/CSS is parsed,
+  // without waiting for all images to finish downloading.
   // ============================================================
-  window.addEventListener('load', () => {
-    const loader = document.querySelector('.page-loader');
-    if (loader) {
-      setTimeout(() => loader.classList.add('hidden'), 300);
+  const loader = document.querySelector('.page-loader');
+  if (loader) {
+    // Already interactive — hide immediately after a minimal delay
+    setTimeout(() => loader.classList.add('hidden'), 150);
+  }
+
+  // ============================================================
+  // LAZY IMAGE LOADING — fade-in + IntersectionObserver
+  // ============================================================
+  // 1. Fade-in: native loading="lazy" images fire onload when they
+  //    enter the viewport; we just add a class to trigger the CSS transition.
+  function activateLazyImg(img) {
+    img.classList.add('lazy-loaded');
+  }
+  document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+    if (img.complete && img.naturalWidth) {
+      activateLazyImg(img);
+    } else {
+      img.addEventListener('load',  () => activateLazyImg(img), { once: true });
+      img.addEventListener('error', () => activateLazyImg(img), { once: true });
     }
   });
+
+  // 2. data-src lazy loader: for any image using data-src / data-srcset
+  //    swap src when it enters the viewport (50px before it appears).
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const img = entry.target;
+        if (img.dataset.src)    img.src    = img.dataset.src;
+        if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+        img.removeAttribute('data-src');
+        img.removeAttribute('data-srcset');
+        img.addEventListener('load',  () => activateLazyImg(img), { once: true });
+        img.addEventListener('error', () => activateLazyImg(img), { once: true });
+        obs.unobserve(img);
+      });
+    }, { rootMargin: '100px 0px' });
+
+    document.querySelectorAll('img[data-src]').forEach(img => io.observe(img));
+  } else {
+    // Fallback for older browsers: load all data-src immediately
+    document.querySelectorAll('img[data-src]').forEach(img => {
+      if (img.dataset.src)    img.src    = img.dataset.src;
+      if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+      activateLazyImg(img);
+    });
+  }
 
   // ============================================================
   // HEADER SCROLL BEHAVIOR

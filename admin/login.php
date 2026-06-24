@@ -41,9 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --blue:   #0D3B66;
-      --blue-l: #1a5c99;
-      --gold:   #C9A84C;
+      --blue:   #0C2614;
+      --blue-l: #1a4728;
+      --gold:   #F6A229;
       --red:    #dc2626;
       --border: #e2e8f0;
       --muted:  #64748b;
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     /* ── Left panel ── */
     .login-panel {
-      background: linear-gradient(160deg, var(--blue) 0%, #0a2d52 60%, #071e38 100%);
+      background: linear-gradient(160deg, var(--blue) 0%, #0e2d19 60%, #071509 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       position: absolute;
       width: 500px; height: 500px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(201,168,76,.18) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(246,162,41,.18) 0%, transparent 70%);
       top: -100px; left: -100px;
       pointer-events: none;
     }
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       position: absolute;
       width: 400px; height: 400px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(201,168,76,.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(246,162,41,.12) 0%, transparent 70%);
       bottom: -80px; right: -80px;
       pointer-events: none;
     }
@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       transition: border-color .2s, box-shadow .2s;
       outline: none;
     }
-    .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(13,59,102,.1); background: #fff; }
+    .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(12,38,20,.1); background: #fff; }
     .input-wrap { position: relative; }
     .input-wrap .form-input { padding-left: 42px; }
     .input-wrap .input-icon {
@@ -277,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- Right form panel -->
 <div class="form-panel">
   <div class="login-box">
-    <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--blue),var(--blue-l));border-radius:14px;display:grid;place-items:center;margin-bottom:24px;box-shadow:0 8px 24px rgba(13,59,102,.25)">
+    <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--blue),var(--blue-l));border-radius:14px;display:grid;place-items:center;margin-bottom:24px;box-shadow:0 8px 24px rgba(12,38,20,.25)">
       <i class="fas fa-shield-alt" style="font-size:1.4rem;color:#fff"></i>
     </div>
     <h2>Sign In</h2>

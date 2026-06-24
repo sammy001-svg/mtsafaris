@@ -27,7 +27,7 @@ $categories          = getCategories();
     ];
     foreach ($heroSlides as $i => $slide): ?>
     <div class="hero-slide<?= $i === 0 ? ' active' : '' ?>" data-index="<?= $i ?>">
-      <img src="<?= $slide[0] ?>" alt="<?= $slide[1] ?>" <?= $i === 0 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"' ?>>
+      <img src="<?= $slide[0] ?>" alt="<?= $slide[1] ?>" <?= $i === 0 ? 'loading="eager" fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"' ?>>
     </div>
     <?php endforeach; ?>
   </div>
@@ -193,7 +193,7 @@ $categories          = getCategories();
         <div class="package-card-img">
           <a href="<?= url('package-detail.php?slug=' . h($pkg['slug'])) ?>">
             <img src="<?= h($pkg['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>"
-                 alt="<?= h($pkg['title']) ?>" loading="lazy">
+                 alt="<?= h($pkg['title']) ?>" loading="lazy" decoding="async">
           </a>
           <span class="package-badge"><?= h($pkg['type']) ?></span>
           <button class="package-wishlist <?= isLoggedIn() ? '' : '' ?>"
@@ -307,7 +307,7 @@ $categories          = getCategories();
       ?>
       <a href="<?= url('destinations.php?slug=' . h($dest['slug'])) ?>"
          class="destination-card" style="<?= $span ?>;border-radius:16px;overflow:hidden;display:block;position:relative">
-        <img src="<?= h($img) ?>" alt="<?= h($dest['name']) ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform .5s ease">
+        <img src="<?= h($img) ?>" alt="<?= h($dest['name']) ?>" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transition:transform .5s ease">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,59,102,.85) 0%,transparent 55%)"></div>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:20px">
           <div style="font-size:.72rem;font-weight:700;color:var(--clr-gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px"><?= h($dest['country']) ?></div>
@@ -321,7 +321,7 @@ $categories          = getCategories();
       ?>
       <a href="<?= url('destinations.php?slug=' . h($dest['slug'])) ?>"
          style="border-radius:16px;overflow:hidden;display:block;position:relative">
-        <img src="<?= h($img) ?>" alt="<?= h($dest['name']) ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform .5s ease">
+        <img src="<?= h($img) ?>" alt="<?= h($dest['name']) ?>" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transition:transform .5s ease">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,59,102,.85) 0%,transparent 55%)"></div>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:16px">
           <div style="font-size:.68rem;font-weight:700;color:var(--clr-gold);letter-spacing:.1em;text-transform:uppercase"><?= h($dest['country']) ?></div>
@@ -459,7 +459,7 @@ $categories          = getCategories();
         <div class="blog-card-img">
           <a href="<?= url('blog-detail.php?slug=' . h($post['slug'])) ?>">
             <img src="<?= h($post['featured_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>"
-                 alt="<?= h($post['title']) ?>" loading="lazy">
+                 alt="<?= h($post['title']) ?>" loading="lazy" decoding="async">
           </a>
         </div>
         <div class="blog-card-body">

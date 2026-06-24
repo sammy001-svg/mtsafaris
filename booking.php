@@ -297,7 +297,7 @@ $basePrice = (float)($pkg['sale_price'] ?: $pkg['base_price']);
             <h3 style="color:#fff;font-size:.95rem;margin-bottom:12px">Booking Summary</h3>
             <div style="display:flex;gap:12px;align-items:start">
               <img src="<?= h($pkg['hero_image']?:'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=200&q=70') ?>"
-                   style="width:64px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0" alt="">
+                   style="width:64px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0" alt="" loading="lazy" decoding="async">
               <div>
                 <p style="color:#fff;font-size:.85rem;font-weight:700;line-height:1.3"><?= h($pkg['title']) ?></p>
                 <p style="color:rgba(255,255,255,.7);font-size:.75rem;margin-top:4px">

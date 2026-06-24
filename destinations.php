@@ -32,7 +32,7 @@ if ($slug) {
 <!-- ── Full-height hero ──────────────────────────────────────────────── -->
 <div class="dest-hero">
   <img src="<?= h($dest['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1600&q=85') ?>"
-       alt="<?= h($dest['name']) ?>" class="dest-hero-img">
+       alt="<?= h($dest['name']) ?>" class="dest-hero-img" fetchpriority="high" decoding="async">
   <div class="dest-hero-overlay"></div>
   <div class="dest-hero-content container">
     <div class="breadcrumb" style="margin-bottom:20px">
@@ -92,7 +92,7 @@ if ($slug) {
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-radius:12px;overflow:hidden">
           <?php foreach (array_slice($gallery, 0, 6) as $img): ?>
           <a href="<?= h($img) ?>" target="_blank" style="display:block;aspect-ratio:4/3;overflow:hidden">
-            <img src="<?= h($img) ?>" loading="lazy" alt="" style="width:100%;height:100%;object-fit:cover;transition:transform .4s" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform=''">
+            <img src="<?= h($img) ?>" loading="lazy" decoding="async" alt="" style="width:100%;height:100%;object-fit:cover;transition:transform .4s" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform=''">
           </a>
           <?php endforeach; ?>
         </div>
@@ -235,7 +235,7 @@ if ($slug) {
       <article class="package-card">
         <div class="package-card-img">
           <a href="<?= url('package-detail.php?slug='.h($pkg['slug'])) ?>">
-            <img src="<?= h($pkg['hero_image'] ?: $dest['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>" alt="<?= h($pkg['title']) ?>" loading="lazy">
+            <img src="<?= h($pkg['hero_image'] ?: $dest['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>" alt="<?= h($pkg['title']) ?>" loading="lazy" decoding="async">
           </a>
           <?php if ($pkg['is_featured']): ?><span class="package-badge package-badge-featured">Featured</span><?php endif; ?>
         </div>
@@ -276,7 +276,7 @@ if ($slug) {
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     var icon = L.divIcon({
-      html: '<div style="background:var(--clr-gold,#C9A84C);width:36px;height:36px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.3)"></div>',
+      html: '<div style="background:var(--clr-gold,#F6A229);width:36px;height:36px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.3)"></div>',
       iconSize: [36,36], iconAnchor:[18,36], className:''
     });
     L.marker([lat, lng], {icon: icon}).addTo(map)
@@ -297,7 +297,7 @@ if ($slug) {
     <div class="grid-4" style="margin-top:40px">
       <?php foreach ($nearby as $nd): ?>
       <a href="<?= url('destinations.php?slug='.h($nd['slug'])) ?>" class="destination-card">
-        <img src="<?= h($nd['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&q=75') ?>" alt="<?= h($nd['name']) ?>" loading="lazy">
+        <img src="<?= h($nd['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&q=75') ?>" alt="<?= h($nd['name']) ?>" loading="lazy" decoding="async">
         <div class="destination-card-info">
           <div class="destination-card-country"><?= h($nd['country']) ?></div>
           <div class="destination-card-name"><?= h($nd['name']) ?></div>
@@ -411,7 +411,7 @@ $allDests = DB::rows("SELECT d.*, r.name AS region_name, (SELECT COUNT(*) FROM p
     <div class="grid-4">
       <?php foreach ($allDests as $i => $dest): ?>
       <a href="<?= url('destinations.php?slug='.h($dest['slug'])) ?>" class="destination-card" data-animate data-delay="<?= ($i%4)*80 ?>">
-        <img src="<?= h($dest['hero_image']?:'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&q=75') ?>" alt="<?= h($dest['name']) ?>" loading="lazy">
+        <img src="<?= h($dest['hero_image']?:'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&q=75') ?>" alt="<?= h($dest['name']) ?>" loading="lazy" decoding="async">
         <div class="destination-card-info">
           <div class="destination-card-country"><?= h($dest['region_name']??$dest['continent']??'') ?></div>
           <div class="destination-card-name"><?= h($dest['name']) ?>, <?= h($dest['country']) ?></div>

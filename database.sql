@@ -7,8 +7,11 @@ SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+03:00";
 
-CREATE DATABASE IF NOT EXISTS `mtsafaris` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `mtsafaris`;
+-- NOTE: On cPanel, create the database first via cPanel > MySQL Databases,
+-- then select it in phpMyAdmin before importing this file.
+-- Do NOT uncomment the lines below on shared hosting:
+-- CREATE DATABASE IF NOT EXISTS `mtsafaris` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- USE `mtsafaris`;
 
 -- =============================================================
 -- USERS & AUTHENTICATION
@@ -488,8 +491,8 @@ INSERT INTO `regions` (`name`, `slug`, `sort_order`) VALUES
 ('Indian Ocean Islands', 'indian-ocean', 6);
 
 INSERT INTO `categories` (`name`, `slug`, `icon`, `color`, `description`, `sort_order`) VALUES
-('Corporate Travel',    'corporate-travel',    'fa-briefcase',      '#0D3B66', 'Premium corporate travel solutions for businesses', 1),
-('Holiday Packages',   'holiday-packages',    'fa-umbrella-beach', '#D4A017', 'Relaxing holiday getaways for families and groups', 2),
+('Corporate Travel',    'corporate-travel',    'fa-briefcase',      '#0C2614', 'Premium corporate travel solutions for businesses', 1),
+('Holiday Packages',   'holiday-packages',    'fa-umbrella-beach', '#F6A229', 'Relaxing holiday getaways for families and groups', 2),
 ('Honeymoon',          'honeymoon',           'fa-heart',          '#E91E8C', 'Romantic escapes for newlyweds', 3),
 ('Group Tours',        'group-tours',         'fa-users',          '#3BAFDA', 'Exciting tours for large groups', 4),
 ('Educational Tours',  'educational-tours',   'fa-graduation-cap', '#4CAF50', 'Educational travel experiences', 5),

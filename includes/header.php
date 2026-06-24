@@ -19,7 +19,7 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <?= seoMeta($pageTitle ?? '', $pageDescription ?? '', $pageImage ?? '', $ogType ?? 'website') ?>
   <meta name="csrf-token" content="<?= csrfToken() ?>">
-  <meta name="theme-color" content="#0D3B66">
+  <meta name="theme-color" content="#0C2614">
   <link rel="icon" href="<?= url('assets/images/favicon.ico') ?>" type="image/x-icon">
   <!-- Resource hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,8 +28,10 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
   <link rel="dns-prefetch" href="https://images.unsplash.com">
   <!-- Critical CSS preload -->
   <link rel="preload" href="<?= url('assets/css/style.css') ?>?v=<?= $cssV ?>" as="style">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <!-- Font Awesome — async load to avoid render-blocking -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" crossorigin="anonymous"
+        onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"></noscript>
   <!-- Main Styles -->
   <link rel="stylesheet" href="<?= url('assets/css/style.css') ?>?v=<?= $cssV ?>">
   <?php if (isset($extraCss)): foreach ($extraCss as $css): ?>

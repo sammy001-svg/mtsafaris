@@ -44,13 +44,13 @@ $milestones = [
       <div style="position:relative" data-animate>
         <div class="about-img-grid">
           <div class="main-img">
-            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=85" alt="Masai Mara Safari">
+            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=85" alt="Masai Mara Safari" loading="lazy" decoding="async">
           </div>
           <div class="sub-img">
-            <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80" alt="Safari Guide">
+            <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80" alt="Safari Guide" loading="lazy" decoding="async">
           </div>
           <div class="sub-img">
-            <img src="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=400&q=80" alt="Mt Kilimanjaro">
+            <img src="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=400&q=80" alt="Mt Kilimanjaro" loading="lazy" decoding="async">
           </div>
         </div>
         <div class="about-badge" style="position:absolute;bottom:20px;right:-20px">
