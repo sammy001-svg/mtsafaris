@@ -2,6 +2,15 @@
 $pageTitle       = 'Travel Blog — Destination Guides, Safari Tips & Travel Stories';
 $pageDescription = 'Read MT Safaris travel blog for expert destination guides, safari tips, corporate travel insights, and inspiring travel stories from East Africa and beyond.';
 $headerClass     = 'solid';
+require_once 'includes/config.php';
+require_once 'includes/functions.php';
+$_blogSchema = DB::rows("SELECT title, slug FROM blog_posts WHERE status='published' AND published_at <= NOW() ORDER BY published_at DESC LIMIT 20");
+$jsonLd = schemaItemList($_blogSchema, url('blog.php'), 'MT Safaris Travel Blog', 'blog-detail.php?slug=')
+        . schemaBreadcrumb([
+            ['name' => 'Home', 'url' => url()],
+            ['name' => 'Blog', 'url' => url('blog.php')],
+          ]);
+unset($_blogSchema);
 require_once 'includes/header.php';
 
 $blogCategories = DB::rows("SELECT bc.*, COUNT(bp.id) AS post_count

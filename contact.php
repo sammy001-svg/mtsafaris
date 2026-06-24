@@ -2,7 +2,13 @@
 $pageTitle       = 'Contact Us — MT Safaris';
 $pageDescription = 'Get in touch with MT Safaris. Request a quote, book a consultation, or speak with our expert travel consultants. We\'re here 24/7.';
 $headerClass     = 'solid';
-
+require_once 'includes/config.php';
+require_once 'includes/functions.php';
+$jsonLd = schemaContactPage()
+        . schemaBreadcrumb([
+            ['name' => 'Home',    'url' => url()],
+            ['name' => 'Contact', 'url' => url('contact.php')],
+          ]);
 require_once 'includes/header.php';
 
 $success = $error = '';

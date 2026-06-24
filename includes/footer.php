@@ -12,8 +12,7 @@ $categories  = getCategories();
       <!-- Brand -->
       <div class="footer-brand">
         <a href="<?= url() ?>" class="logo">
-          <div class="logo-icon"><i class="fas fa-globe-africa"></i></div>
-          <div class="logo-text">MT Safaris <span class="logo-sub">Premium Travel</span></div>
+          <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:64px;width:auto">
         </a>
         <p>Crafting exceptional travel experiences across Africa and the world since 2005. We are East Africa's most trusted travel partner for corporate, leisure, and adventure journeys.</p>
         <div class="footer-social">

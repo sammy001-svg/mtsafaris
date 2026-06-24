@@ -37,9 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf()) {
 </head>
 <body>
 <div class="auth-card">
-  <a href="<?= url() ?>" class="logo" style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:24px;text-decoration:none">
-    <div class="logo-icon"><i class="fas fa-globe-africa"></i></div>
-    <div class="logo-text" style="color:var(--clr-primary)">MT Safaris</div>
+  <a href="<?= url() ?>" class="logo" style="display:flex;justify-content:center;margin-bottom:24px;text-decoration:none">
+    <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:72px;width:auto">
   </a>
   <h2 style="text-align:center;color:var(--clr-primary);margin-bottom:6px;font-size:1.4rem">Create Your Account</h2>
   <p style="text-align:center;color:var(--clr-muted);font-size:.875rem;margin-bottom:24px">Join 5,000+ happy travelers</p>

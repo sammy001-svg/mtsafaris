@@ -7,9 +7,8 @@ function portalActive($file) { global $currentPath; return $currentPath === $fil
 ?>
 <aside class="portal-sidebar">
   <div class="portal-sidebar-brand">
-    <a href="<?= url() ?>" style="display:flex;align-items:center;gap:8px;text-decoration:none">
-      <i class="fas fa-globe-africa" style="font-size:1.5rem;color:var(--clr-gold)"></i>
-      <span style="font-family:var(--ff-head);font-weight:700;font-size:1rem;color:var(--clr-primary)">MT Safaris</span>
+    <a href="<?= url() ?>" style="display:flex;align-items:center;text-decoration:none">
+      <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:52px;width:auto">
     </a>
   </div>
 

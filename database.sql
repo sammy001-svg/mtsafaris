@@ -13,6 +13,35 @@ SET time_zone = "+03:00";
 -- CREATE DATABASE IF NOT EXISTS `mtsafaris` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 -- USE `mtsafaris`;
 
+-- Drop all tables (safe re-import — foreign key checks are off above)
+DROP TABLE IF EXISTS `email_campaigns`;
+DROP TABLE IF EXISTS `audit_logs`;
+DROP TABLE IF EXISTS `settings`;
+DROP TABLE IF EXISTS `newsletter_subscribers`;
+DROP TABLE IF EXISTS `banners`;
+DROP TABLE IF EXISTS `faqs`;
+DROP TABLE IF EXISTS `testimonials`;
+DROP TABLE IF EXISTS `inquiries`;
+DROP TABLE IF EXISTS `notifications`;
+DROP TABLE IF EXISTS `wishlists`;
+DROP TABLE IF EXISTS `blog_posts`;
+DROP TABLE IF EXISTS `blog_categories`;
+DROP TABLE IF EXISTS `reviews`;
+DROP TABLE IF EXISTS `coupons`;
+DROP TABLE IF EXISTS `payments`;
+DROP TABLE IF EXISTS `booking_payments`;
+DROP TABLE IF EXISTS `bookings`;
+DROP TABLE IF EXISTS `package_pricing`;
+DROP TABLE IF EXISTS `package_addons`;
+DROP TABLE IF EXISTS `packages`;
+DROP TABLE IF EXISTS `categories`;
+DROP TABLE IF EXISTS `destinations`;
+DROP TABLE IF EXISTS `regions`;
+DROP TABLE IF EXISTS `user_documents`;
+DROP TABLE IF EXISTS `user_sessions`;
+DROP TABLE IF EXISTS `password_resets`;
+DROP TABLE IF EXISTS `users`;
+
 -- =============================================================
 -- USERS & AUTHENTICATION
 -- =============================================================

@@ -316,9 +316,11 @@ function seoMeta(string $title, string $description = '', string $image = '', st
     $cleanUrl = preg_replace('/[?&](utm_[^&]+|fbclid|gclid)(&|$)/', '$2', $canonical);
     $cleanUrl = rtrim($cleanUrl, '?&');
 
+    $imgAlt = mb_substr($fullTitle, 0, 100);
     return '<title>' . h($fullTitle) . '</title>
 <meta name="description" content="' . h(mb_substr($desc, 0, 160)) . '">
 <link rel="canonical" href="' . h($cleanUrl) . '">
+<meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="' . h($siteName) . '">
 <meta property="og:url" content="' . h($canonical) . '">
 <meta property="og:title" content="' . h($fullTitle) . '">
@@ -326,12 +328,14 @@ function seoMeta(string $title, string $description = '', string $image = '', st
 <meta property="og:image" content="' . h($img) . '">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="' . h($imgAlt) . '">
 <meta property="og:type" content="' . h($ogType) . '">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@MTSafaris">
 <meta name="twitter:title" content="' . h($fullTitle) . '">
 <meta name="twitter:description" content="' . h(mb_substr($desc, 0, 200)) . '">
-<meta name="twitter:image" content="' . h($img) . '">';
+<meta name="twitter:image" content="' . h($img) . '">
+<meta name="twitter:image:alt" content="' . h($imgAlt) . '">';
 }
 
 /**
@@ -527,14 +531,15 @@ function schemaFaqPage(array $faqs): string {
 /**
  * ItemList schema for package/destination listing pages.
  */
-function schemaItemList(array $items, string $pageUrl, string $listName = 'Tour Packages'): string {
+function schemaItemList(array $items, string $pageUrl, string $listName = 'Tour Packages', string $urlPattern = 'package-detail.php?slug='): string {
     $elements = [];
     foreach ($items as $i => $item) {
+        $slug = $item['slug'] ?? '';
         $elements[] = [
             '@type'    => 'ListItem',
             'position' => $i + 1,
             'name'     => $item['title'] ?? $item['name'] ?? '',
-            'url'      => isset($item['slug']) ? APP_URL . '/package-detail.php?slug=' . $item['slug'] : '',
+            'url'      => $slug ? APP_URL . '/' . $urlPattern . urlencode($slug) : $pageUrl,
         ];
     }
     return jsonLd([
@@ -544,6 +549,29 @@ function schemaItemList(array $items, string $pageUrl, string $listName = 'Tour 
         'url'             => $pageUrl,
         'numberOfItems'   => count($items),
         'itemListElement' => $elements,
+    ]);
+}
+
+function schemaAboutPage(): string {
+    return jsonLd([
+        '@context'    => 'https://schema.org',
+        '@type'       => ['AboutPage', 'WebPage'],
+        'url'         => APP_URL . '/about.php',
+        'name'        => 'About ' . APP_NAME,
+        'description' => APP_TAGLINE,
+        'publisher'   => ['@id' => APP_URL . '/#organization'],
+        'mainEntity'  => ['@id' => APP_URL . '/#organization'],
+    ]);
+}
+
+function schemaContactPage(): string {
+    return jsonLd([
+        '@context'    => 'https://schema.org',
+        '@type'       => ['ContactPage', 'WebPage'],
+        'url'         => APP_URL . '/contact.php',
+        'name'        => 'Contact ' . APP_NAME,
+        'description' => 'Get in touch with ' . APP_NAME . ' for safari bookings, travel quotes, and expert consultations.',
+        'publisher'   => ['@id' => APP_URL . '/#organization'],
     ]);
 }
 

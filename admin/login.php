@@ -243,9 +243,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- Left decorative panel -->
 <div class="login-panel">
   <a href="<?= url() ?>" class="panel-logo">
-    <div class="panel-logo-icon"><i class="fas fa-globe-africa"></i></div>
+    <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:68px;width:auto">
     <div class="panel-logo-text">
-      <h1>MT Safaris</h1>
+      <h1>Mountain Top Safaris</h1>
       <p>Management System</p>
     </div>
   </a>

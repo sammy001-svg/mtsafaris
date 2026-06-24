@@ -376,6 +376,13 @@ if ($slug) {
 $pageTitle       = 'Destinations — Explore Africa & Beyond | MT Safaris';
 $pageDescription = 'Explore breathtaking destinations across Africa, the Indian Ocean, Middle East, and Europe with MT Safaris premium travel packages.';
 $headerClass     = 'solid';
+$_destSchema = DB::rows("SELECT name AS title, slug FROM destinations WHERE is_active=1 ORDER BY sort_order ASC, name ASC");
+$jsonLd = schemaItemList($_destSchema, url('destinations.php'), 'Destinations — MT Safaris', 'destinations.php?slug=')
+        . schemaBreadcrumb([
+            ['name' => 'Home',         'url' => url()],
+            ['name' => 'Destinations', 'url' => url('destinations.php')],
+          ]);
+unset($_destSchema);
 require_once 'includes/header.php';
 
 $regions  = DB::rows("SELECT * FROM regions ORDER BY sort_order ASC");

@@ -20,8 +20,8 @@
     }
 })();
 
-define('APP_NAME',    'MT Safaris');
-define('APP_TAGLINE', 'Discover Exceptional Travel Experiences Worldwide');
+define('APP_NAME',    'Mountain Top Safaris');
+define('APP_TAGLINE', 'Discover Exceptional Safari & Travel Experiences Worldwide');
 define('APP_VERSION', '1.0.0');
 define('APP_ENV',     getenv('APP_ENV') ?: 'development');
 define('APP_URL',     rtrim(getenv('APP_URL') ?: 'http://localhost/Mtsafaris', '/'));
@@ -62,8 +62,9 @@ define('PAYPAL_SECRET',      getenv('PAYPAL_SECRET')      ?: '');
 define('PAYPAL_SANDBOX',     filter_var(getenv('PAYPAL_SANDBOX') ?: 'true', FILTER_VALIDATE_BOOLEAN));
 
 // --- API Keys ---
-define('GOOGLE_MAPS_KEY',   getenv('GOOGLE_MAPS_KEY')   ?: '');
-define('GOOGLE_ANALYTICS',  getenv('GOOGLE_ANALYTICS')  ?: '');
+define('GOOGLE_MAPS_KEY',        getenv('GOOGLE_MAPS_KEY')        ?: '');
+define('GOOGLE_ANALYTICS',       getenv('GOOGLE_ANALYTICS')       ?: '');
+define('GOOGLE_SEARCH_CONSOLE',  getenv('GOOGLE_SEARCH_CONSOLE')  ?: '');
 define('RECAPTCHA_SITE',    getenv('RECAPTCHA_SITE')    ?: '');
 define('RECAPTCHA_SECRET',  getenv('RECAPTCHA_SECRET')  ?: '');
 

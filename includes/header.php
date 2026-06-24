@@ -20,6 +20,9 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
   <?= seoMeta($pageTitle ?? '', $pageDescription ?? '', $pageImage ?? '', $ogType ?? 'website') ?>
   <meta name="csrf-token" content="<?= csrfToken() ?>">
   <meta name="theme-color" content="#0C2614">
+  <?php if (!empty(GOOGLE_SEARCH_CONSOLE)): ?>
+  <meta name="google-site-verification" content="<?= h(GOOGLE_SEARCH_CONSOLE) ?>">
+  <?php endif; ?>
   <link rel="icon" href="<?= url('assets/images/favicon.ico') ?>" type="image/x-icon">
   <!-- Resource hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,11 +59,7 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
 
       <!-- Logo -->
       <a href="<?= url() ?>" class="logo">
-        <div class="logo-icon"><i class="fas fa-globe-africa"></i></div>
-        <div class="logo-text">
-          MT Safaris
-          <span class="logo-sub">Premium Travel</span>
-        </div>
+        <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:58px;width:auto">
       </a>
 
       <!-- Main Nav -->
@@ -136,7 +135,7 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
 </header>
 
 <!-- Search Overlay -->
-<div id="searchOverlay" style="display:none;position:fixed;inset:0;background:rgba(13,59,102,.96);z-index:2000;align-items:flex-start;justify-content:center;padding-top:120px">
+<div id="searchOverlay" style="display:none;position:fixed;inset:0;background:rgba(12,38,20,.96);z-index:2000;align-items:flex-start;justify-content:center;padding-top:120px">
   <div style="width:100%;max-width:700px;padding:0 24px">
     <form action="<?= url('search.php') ?>" method="GET" id="overlaySearchForm" style="position:relative">
       <i class="fas fa-search" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:1.1rem;pointer-events:none"></i>
@@ -163,8 +162,7 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
   <button class="close-btn"><i class="fas fa-times"></i></button>
   <div style="margin-bottom:24px">
     <div class="logo">
-      <div class="logo-icon"><i class="fas fa-globe-africa"></i></div>
-      <div class="logo-text">MT Safaris <span class="logo-sub">Premium Travel</span></div>
+      <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:52px;width:auto">
     </div>
   </div>
   <a href="<?= url() ?>">Home</a>

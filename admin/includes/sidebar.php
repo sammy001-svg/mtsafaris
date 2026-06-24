@@ -1,10 +1,10 @@
 <?php $adminUser = currentUser(); ?>
 <aside class="admin-sidebar" id="adminSidebar">
   <div class="sidebar-brand">
-    <div class="sidebar-brand-icon"><i class="fas fa-globe-africa"></i></div>
+    <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:48px;width:auto">
     <div>
-      <div class="sidebar-brand-text">MT Safaris</div>
-      <span class="sidebar-brand-sub">Admin Panel</span>
+      <div class="sidebar-brand-text">Admin Panel</div>
+      <span class="sidebar-brand-sub">Management System</span>
     </div>
   </div>
 

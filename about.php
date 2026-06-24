@@ -2,6 +2,13 @@
 $pageTitle       = 'About MT Safaris — Our Story, Mission & Team';
 $pageDescription = 'Learn about MT Safaris — East Africa\'s leading travel company. Our story, mission, vision, expert team, and 18+ years of crafting exceptional travel experiences.';
 $headerClass     = 'solid';
+require_once 'includes/config.php';
+require_once 'includes/functions.php';
+$jsonLd = schemaAboutPage()
+        . schemaBreadcrumb([
+            ['name' => 'Home',     'url' => url()],
+            ['name' => 'About Us', 'url' => url('about.php')],
+          ]);
 require_once 'includes/header.php';
 
 $team = [

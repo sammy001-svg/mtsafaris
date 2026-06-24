@@ -165,10 +165,10 @@ $issuedDate = formatDate($booking['created_at'], 'M j, Y');
     <!-- Invoice header -->
     <div class="inv-header">
       <div class="inv-logo">
-        <div class="inv-logo-icon"><i class="fas fa-globe-africa"></i></div>
+        <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:64px;width:auto">
         <div class="inv-logo-text">
-          <h1>MT Safaris</h1>
-          <p>Premium Safari & Travel Experiences</p>
+          <h1>Mountain Top Safaris</h1>
+          <p>Adventures &amp; Travel Experiences</p>
         </div>
       </div>
       <div class="inv-meta">
