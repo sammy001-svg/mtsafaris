@@ -563,9 +563,9 @@ INSERT INTO `settings` (`key`, `value`, `type`, `group`) VALUES
 ('stripe_public_key', '',                           'text',  'payment'),
 ('paypal_client_id',  '',                           'text',  'payment');
 
--- Admin super user (password: Admin@2024!)
+-- Admin super user (password: Admin@123@1m)
 INSERT INTO `users` (`first_name`, `last_name`, `email`, `password_hash`, `role`, `status`, `email_verified`) VALUES
-('Super', 'Admin', 'admin@mtsafaris.com', '$2y$12$EFyXllxaAslvRx8gytzHvOYOFghnvKKvzpBq3kBfElTQFy05esaUq', 'super_admin', 'active', 1),
-('Travel', 'Manager', 'manager@mtsafaris.com', '$2y$12$EFyXllxaAslvRx8gytzHvOYOFghnvKKvzpBq3kBfElTQFy05esaUq', 'travel_manager', 'active', 1);
+('Super', 'Admin', 'admin@mtsafaris.com', '$2y$12$hrzGEISC7bDkff2CJMXgA.p6bySnlC/93ikkapAxUaqkVEr/8qGD2', 'super_admin', 'active', 1),
+('Travel', 'Manager', 'manager@mtsafaris.com', '$2y$12$hrzGEISC7bDkff2CJMXgA.p6bySnlC/93ikkapAxUaqkVEr/8qGD2', 'travel_manager', 'active', 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
