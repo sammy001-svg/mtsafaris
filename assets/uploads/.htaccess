@@ -1,0 +1,15 @@
+# Block execution of any scripts uploaded here
+<FilesMatch "\.(php\d?|phtml|pl|py|cgi|sh|bash|rb|exe|jsp|asp|aspx|cfm|htaccess)$">
+  Require all denied
+</FilesMatch>
+
+# Also deny via PHP handler (belt-and-suspenders)
+<IfModule mod_php.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+  php_flag engine off
+</IfModule>
+
+Options -ExecCGI
+AddHandler cgi-script .php .php3 .php4 .php5 .php7 .phtml .pl .py .jsp .asp .sh .cgi

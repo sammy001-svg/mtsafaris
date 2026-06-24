@@ -89,7 +89,7 @@ function login(string $email, string $password, bool $remember = false): array {
             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
             'expires_at' => $expires,
         ]);
-        setcookie('remember_token', $token, strtotime('+' . REMEMBER_DAYS . ' days'), '/', '', false, true);
+        setcookie('remember_token', $token, strtotime('+' . REMEMBER_DAYS . ' days'), '/', '', APP_ENV === 'production', true);
     }
 
     auditLog('login', 'users', $user['id']);

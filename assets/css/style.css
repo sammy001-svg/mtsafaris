@@ -559,12 +559,13 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--ff-head); line-height: 1.25; font-weight:
   margin-bottom: 8px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.package-excerpt { font-size: .85rem; color: var(--clr-muted); margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.package-excerpt { font-size: .85rem; color: var(--clr-muted); margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .package-footer { display: flex; align-items: center; justify-content: space-between; }
-.package-price { }
+.package-price { display: flex; flex-direction: column; }
 .package-price .from { font-size: .72rem; color: var(--clr-muted); display: block; }
 .package-price .amount { font-size: 1.4rem; font-weight: 800; font-family: var(--ff-head); color: var(--clr-primary); }
 .package-price .per { font-size: .72rem; color: var(--clr-muted); }
@@ -725,8 +726,8 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--ff-head); line-height: 1.25; font-weight:
 .blog-card:hover .blog-card-img img { transform: scale(1.05); }
 .blog-card-body { padding: 22px 24px 26px; }
 .blog-cat { font-size: .72rem; font-weight: 700; color: var(--clr-gold); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
-.blog-title { font-size: 1rem; font-weight: 700; color: var(--clr-primary); margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.blog-excerpt { font-size: .85rem; color: var(--clr-muted); margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.blog-title { font-size: 1rem; font-weight: 700; color: var(--clr-primary); margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.blog-excerpt { font-size: .85rem; color: var(--clr-muted); margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .blog-meta { display: flex; align-items: center; gap: 14px; font-size: .78rem; color: var(--clr-muted); }
 .blog-meta i { color: var(--clr-sky); }
 

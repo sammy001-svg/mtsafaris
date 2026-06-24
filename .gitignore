@@ -3,9 +3,10 @@ includes/config.local.php
 .env
 *.env
 
-# Uploaded user files
-assets/uploads/
-uploads/
+# Uploaded user files (keep directory and its .htaccess, ignore contents)
+assets/uploads/*
+!assets/uploads/.htaccess
+!assets/uploads/.gitkeep
 
 # OS files
 .DS_Store

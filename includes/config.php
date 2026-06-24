@@ -3,11 +3,28 @@
 // MT Safaris — Application Configuration
 // =============================================================
 
+// Load .env file if it exists (cPanel / shared hosting)
+(function () {
+    $envFile = dirname(__DIR__) . '/.env';
+    if (!file_exists($envFile)) return;
+    foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        $line = trim($line);
+        if ($line === '' || $line[0] === '#') continue;
+        if (!str_contains($line, '=')) continue;
+        [$key, $val] = array_map('trim', explode('=', $line, 2));
+        $val = trim($val, '"\'');
+        if ($key !== '' && !array_key_exists($key, $_ENV)) {
+            putenv("$key=$val");
+            $_ENV[$key] = $val;
+        }
+    }
+})();
+
 define('APP_NAME',    'MT Safaris');
 define('APP_TAGLINE', 'Discover Exceptional Travel Experiences Worldwide');
 define('APP_VERSION', '1.0.0');
 define('APP_ENV',     getenv('APP_ENV') ?: 'development');
-define('APP_URL',     getenv('APP_URL') ?: 'http://localhost/Mtsafaris');
+define('APP_URL',     rtrim(getenv('APP_URL') ?: 'http://localhost/Mtsafaris', '/'));
 define('APP_PATH',    dirname(__DIR__));
 
 // --- Database ---
@@ -42,7 +59,7 @@ define('STRIPE_PUBLIC_KEY',  getenv('STRIPE_PUBLIC_KEY')  ?: '');
 define('STRIPE_SECRET_KEY',  getenv('STRIPE_SECRET_KEY')  ?: '');
 define('PAYPAL_CLIENT_ID',   getenv('PAYPAL_CLIENT_ID')   ?: '');
 define('PAYPAL_SECRET',      getenv('PAYPAL_SECRET')      ?: '');
-define('PAYPAL_SANDBOX',     true);
+define('PAYPAL_SANDBOX',     filter_var(getenv('PAYPAL_SANDBOX') ?: 'true', FILTER_VALIDATE_BOOLEAN));
 
 // --- API Keys ---
 define('GOOGLE_MAPS_KEY',   getenv('GOOGLE_MAPS_KEY')   ?: '');
