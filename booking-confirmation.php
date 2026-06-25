@@ -40,7 +40,7 @@ require_once 'includes/header.php';
       <div style="position:relative;height:200px;overflow:hidden">
         <img src="<?= h($booking['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=900&q=80') ?>"
              style="width:100%;height:100%;object-fit:cover" alt="">
-        <div style="position:absolute;inset:0;background:rgba(13,59,102,.6)"></div>
+        <div style="position:absolute;inset:0;background:rgba(12,38,20,.6)"></div>
         <div style="position:absolute;bottom:20px;left:24px">
           <h3 style="color:#fff;font-size:1.3rem"><?= h($booking['package_title']) ?></h3>
           <p style="color:rgba(255,255,255,.8);font-size:.875rem"><?= h($booking['destination_name']) ?> · <?= $booking['duration_days'] ?> Days</p>

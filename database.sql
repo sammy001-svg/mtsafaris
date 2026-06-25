@@ -185,6 +185,12 @@ CREATE TABLE `packages` (
   `type`                ENUM('corporate','holiday','honeymoon','group','educational','luxury','adventure','safari','religious','custom') NOT NULL DEFAULT 'holiday',
   `accommodation_level` ENUM('budget','standard','superior','luxury','ultra_luxury') DEFAULT 'standard',
   `departure_city`      VARCHAR(150),
+  `child_price`         DECIMAL(10,2),
+  `accommodation`       VARCHAR(300),
+  `transport`           VARCHAR(300),
+  `meals`               VARCHAR(300),
+  `physical_req`        TEXT,
+  `addons`              JSON,
   `departure_dates`     JSON,
   `hotels`              JSON,
   `faqs`                JSON,
@@ -576,21 +582,58 @@ INSERT INTO `faqs` (`category`, `question`, `answer`, `sort_order`) VALUES
 ('safari', 'What should I pack for a safari?', 'Pack neutral-colored clothing, comfortable walking shoes, sunscreen, insect repellent, binoculars, a camera with zoom lens, and any personal medications. We provide a detailed packing list upon booking.', 8);
 
 INSERT INTO `settings` (`key`, `value`, `type`, `group`) VALUES
-('site_name',         'MT Safaris',                'text',  'general'),
-('site_tagline',      'Discover Exceptional Travel Experiences Worldwide', 'text', 'general'),
-('site_email',        'info@mtsafaris.com',         'text',  'general'),
-('site_phone',        '+254 700 000 000',           'text',  'general'),
-('site_whatsapp',     '+254700000000',              'text',  'general'),
-('site_address',      'Westlands, Nairobi, Kenya',  'text',  'general'),
-('currency_default',  'USD',                        'text',  'payment'),
-('tax_rate',          '16',                         'number','payment'),
-('booking_deposit',   '30',                         'number','payment'),
-('smtp_host',         '',                           'text',  'email'),
-('smtp_port',         '587',                        'number','email'),
-('google_maps_key',   '',                           'text',  'integrations'),
-('google_analytics',  '',                           'text',  'integrations'),
-('stripe_public_key', '',                           'text',  'payment'),
-('paypal_client_id',  '',                           'text',  'payment');
+-- General
+('site_name',             'Mountain Top Safaris',  'text',  'general'),
+('site_tagline',          'Discover Exceptional Safari & Travel Experiences Worldwide', 'text', 'general'),
+('currency',              'USD',                   'text',  'general'),
+('tax_rate',              '16',                    'number','general'),
+('booking_deposit',       '30',                    'number','general'),
+('maintenance_mode',      '',                      'bool',  'general'),
+-- Contact
+('contact_email',         'info@mtsafaris.com',    'text',  'contact'),
+('contact_phone',         '+254 700 000 000',      'text',  'contact'),
+('contact_whatsapp',      '+254700000000',          'text',  'contact'),
+('contact_address',       'Westlands, Nairobi, Kenya', 'text', 'contact'),
+('office_hours',          'Mon–Sat: 8AM – 6PM EAT','text', 'contact'),
+('google_maps_url',       '',                      'text',  'contact'),
+-- Social
+('social_facebook',       '',  'url', 'social'),
+('social_instagram',      '',  'url', 'social'),
+('social_twitter',        '',  'url', 'social'),
+('social_youtube',        '',  'url', 'social'),
+('social_linkedin',       '',  'url', 'social'),
+('social_tiktok',         '',  'url', 'social'),
+-- Homepage
+('stat_travelers',        '5000', 'number', 'homepage'),
+('stat_destinations',     '150',  'number', 'homepage'),
+('stat_years',            '18',   'number', 'homepage'),
+('stat_satisfaction',     '98',   'number', 'homepage'),
+('hero_badge',            '#1 Rated Travel Company in East Africa', 'text', 'homepage'),
+('hero_subtitle',         'From iconic African safaris to luxury island retreats, corporate travel solutions, and bespoke adventures — we craft journeys that inspire and endure.', 'text', 'homepage'),
+('newsletter_tagline',    'Get exclusive travel deals, destination guides, and travel tips delivered straight to your inbox. Join 10,000+ subscribers.', 'text', 'homepage'),
+('partners',              'KATO,ATTA,IATA,Kenya Tourism Board,Tripadvisor', 'text', 'homepage'),
+-- Email / SMTP
+('smtp_host',             '',    'text',  'email'),
+('smtp_port',             '587', 'number','email'),
+('smtp_user',             '',    'text',  'email'),
+('mail_from_name',        'Mountain Top Safaris', 'text', 'email'),
+('mail_from_email',       'info@mtsafaris.com',   'text', 'email'),
+-- Payments
+('stripe_enabled',        '',  'bool', 'payment'),
+('stripe_pub_key',        '',  'text', 'payment'),
+('paypal_enabled',        '',  'bool', 'payment'),
+('paypal_client_id',      '',  'text', 'payment'),
+('paypal_mode',           'sandbox', 'text', 'payment'),
+('bank_enabled',          '1', 'bool', 'payment'),
+('bank_details',          '', 'text', 'payment'),
+-- SEO & Analytics
+('meta_title',            'Mountain Top Safaris | Premium Safari & Travel Experiences', 'text', 'seo'),
+('meta_description',      'East Africa''s premier travel company — luxury safaris, holiday packages, honeymoon escapes, and adventure tours.', 'text', 'seo'),
+('og_image',              '',  'url',  'seo'),
+('ga_id',                 '',  'text', 'seo'),
+('search_console',        '',  'text', 'seo'),
+('google_maps_key',       '',  'text', 'seo'),
+('recaptcha_site_key',    '',  'text', 'seo');
 
 -- Admin super user (password: Admin@123@1m)
 INSERT INTO `users` (`first_name`, `last_name`, `email`, `password_hash`, `role`, `status`, `email_verified`) VALUES

@@ -9,6 +9,17 @@ function h(string $str): string {
     return htmlspecialchars($str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }
 
+// Retrieve a value from the settings table with an optional fallback.
+function getSetting(string $key, string $default = ''): string {
+    static $cache = null;
+    if ($cache === null) {
+        $rows  = DB::rows("SELECT `key`, `value` FROM settings");
+        $cache = [];
+        foreach ($rows as $r) $cache[$r['key']] = $r['value'];
+    }
+    return $cache[$key] ?? $default;
+}
+
 function slug(string $text): string {
     $text = mb_strtolower(trim($text));
     $text = preg_replace('/[^\w\s-]/u', '', $text);

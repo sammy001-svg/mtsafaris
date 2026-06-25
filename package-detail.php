@@ -15,7 +15,11 @@ $excluded  = jd($pkg['excluded']);
 $gallery   = jd($pkg['gallery']);
 $hotels    = jd($pkg['hotels']);
 $faqs      = jd($pkg['faqs']);
-$addons    = DB::rows("SELECT * FROM package_addons WHERE package_id = ? AND is_active = 1", [$pkg['id']]);
+// Addons: prefer JSON column (set in admin form), fall back to separate table
+$addons = jd($pkg['addons'] ?? '[]', []);
+if (empty($addons)) {
+    $addons = DB::rows("SELECT name, price, '' AS description FROM package_addons WHERE package_id=? AND is_active=1", [$pkg['id']]);
+}
 $reviews   = getPackageReviews($pkg['id'], 8);
 
 $related   = DB::rows("SELECT p.*, d.name AS destination_name, d.country
@@ -25,8 +29,8 @@ $related   = DB::rows("SELECT p.*, d.name AS destination_name, d.country
                         ORDER BY p.is_featured DESC LIMIT 3",
                        [$pkg['id'], $pkg['category_id'], $pkg['type']]);
 
-$pageTitle       = h($pkg['title']) . ' — MT Safaris';
-$pageDescription = excerpt($pkg['tagline'] ?: strip_tags($pkg['overview'] ?? ''), 160);
+$pageTitle       = h($pkg['meta_title'] ?: $pkg['title']) . ' — MT Safaris';
+$pageDescription = $pkg['meta_description'] ?: excerpt($pkg['tagline'] ?: strip_tags($pkg['overview'] ?? ''), 160);
 $pageImage       = $pkg['hero_image'];
 $ogType          = 'product';
 $headerClass     = 'solid';

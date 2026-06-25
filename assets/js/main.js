@@ -921,7 +921,7 @@
       if (!items.length) continue;
       html += `<div style="padding:8px 0 0;border-top:1px solid var(--clr-border)"><div style="padding:6px 16px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--clr-muted)"><i class="fas ${icons[type]}" style="margin-right:6px"></i>${labels[type]}</div>`;
       items.forEach(r => {
-        const highlighted = r.title.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'), '<mark style="background:rgba(212,160,23,.25);border-radius:2px;padding:0 2px">$1</mark>');
+        const highlighted = r.title.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'), '<mark style="background:rgba(246,162,41,.25);border-radius:2px;padding:0 2px">$1</mark>');
         html += `<a href="${r.url}" data-result style="display:flex;align-items:center;gap:12px;padding:10px 16px;text-decoration:none;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
           ${r.image ? `<img src="${r.image}" alt="" style="width:44px;height:36px;object-fit:cover;border-radius:4px;flex-shrink:0">` : `<div style="width:44px;height:36px;background:var(--clr-light);border-radius:4px;flex-shrink:0;display:grid;place-items:center"><i class="fas ${icons[type]}" style="color:var(--clr-muted);font-size:.75rem"></i></div>`}
           <div style="flex:1;min-width:0">

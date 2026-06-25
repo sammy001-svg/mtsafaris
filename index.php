@@ -1,15 +1,22 @@
 <?php
+require_once 'includes/config.php';
+require_once 'includes/functions.php';
+
 $pageTitle       = 'Discover Exceptional Travel Experiences Worldwide';
 $pageDescription = 'MT Safaris — East Africa\'s premier travel company. Corporate travel, luxury safaris, holiday packages, honeymoon escapes, and adventure tours.';
 $headerClass     = 'transparent';
 
-require_once 'includes/header.php';
-
-$featuredPackages    = getFeaturedPackages(6);
+$featuredPackages     = getFeaturedPackages(6);
 $featuredDestinations = getFeaturedDestinations(8);
-$testimonials        = getTestimonials(6);
-$recentPosts         = getRecentPosts(3);
-$categories          = getCategories();
+$testimonials         = getTestimonials(6);
+$recentPosts          = getRecentPosts(3);
+$categories           = getCategories();
+
+$_pkgSchema = array_map(fn($p) => ['title' => $p['title'], 'slug' => $p['slug']], $featuredPackages);
+$jsonLd = schemaItemList($_pkgSchema, url(), 'Featured Safari &amp; Travel Packages', 'package-detail.php?slug=');
+unset($_pkgSchema);
+
+require_once 'includes/header.php';
 ?>
 
 <!-- ============================================================
@@ -43,7 +50,7 @@ $categories          = getCategories();
     <div style="max-width:720px">
 
       <div class="hero-badge anim-down">
-        <i class="fas fa-star"></i> #1 Rated Travel Company in East Africa
+        <i class="fas fa-star"></i> <?= h(getSetting('hero_badge', '#1 Rated Travel Company in East Africa')) ?>
       </div>
 
       <h1 class="hero-title anim-up" style="animation-delay:.1s">
@@ -51,7 +58,7 @@ $categories          = getCategories();
       </h1>
 
       <p class="hero-subtitle anim-up" style="animation-delay:.2s">
-        From iconic African safaris to luxury island retreats, corporate travel solutions, and bespoke adventures — we craft journeys that inspire and endure.
+        <?= h(getSetting('hero_subtitle', 'From iconic African safaris to luxury island retreats, corporate travel solutions, and bespoke adventures — we craft journeys that inspire and endure.')) ?>
       </p>
 
       <div class="hero-actions anim-up" style="animation-delay:.3s">
@@ -64,21 +71,27 @@ $categories          = getCategories();
       </div>
 
       <!-- Hero Stats -->
+      <?php
+      $sTravelers    = (int)getSetting('stat_travelers',    '5000');
+      $sDestinations = (int)getSetting('stat_destinations', '150');
+      $sYears        = (int)getSetting('stat_years',        '18');
+      $sSatisfaction = (int)getSetting('stat_satisfaction', '98');
+      ?>
       <div class="hero-stats anim-up" style="animation-delay:.4s">
         <div>
-          <div class="hero-stat-num"><span data-counter="5000">5000</span>+</div>
+          <div class="hero-stat-num"><span data-counter="<?= $sTravelers ?>"><?= number_format($sTravelers) ?></span>+</div>
           <div class="hero-stat-label">Happy Travelers</div>
         </div>
         <div>
-          <div class="hero-stat-num"><span data-counter="150">150</span>+</div>
+          <div class="hero-stat-num"><span data-counter="<?= $sDestinations ?>"><?= $sDestinations ?></span>+</div>
           <div class="hero-stat-label">Destinations</div>
         </div>
         <div>
-          <div class="hero-stat-num"><span data-counter="18">18</span></div>
+          <div class="hero-stat-num"><span data-counter="<?= $sYears ?>"><?= $sYears ?></span></div>
           <div class="hero-stat-label">Years Experience</div>
         </div>
         <div>
-          <div class="hero-stat-num"><span data-counter="98">98</span>%</div>
+          <div class="hero-stat-num"><span data-counter="<?= $sSatisfaction ?>"><?= $sSatisfaction ?></span>%</div>
           <div class="hero-stat-label">Client Satisfaction</div>
         </div>
       </div>
@@ -162,6 +175,38 @@ $categories          = getCategories();
 </section>
 
 <!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section class="section-sm" style="background:#fff;border-bottom:1px solid var(--clr-border)">
+  <div class="container">
+    <div class="section-header" data-animate style="margin-bottom:40px">
+      <span class="section-badge"><i class="fas fa-compass" style="margin-right:5px"></i> Simple Process</span>
+      <h2 class="section-title">Plan Your Dream Trip in <span>3 Easy Steps</span></h2>
+    </div>
+    <div class="grid-3" style="gap:0;position:relative">
+      <!-- connector line -->
+      <div style="position:absolute;top:44px;left:calc(16.67% + 44px);right:calc(16.67% + 44px);height:2px;background:linear-gradient(90deg,var(--clr-gold),var(--clr-primary));opacity:.25;display:block" aria-hidden="true"></div>
+      <?php
+      $steps = [
+        ['fas fa-search-location', '01', 'Choose Your Journey',     'Browse our curated safari, holiday, and adventure packages. Filter by destination, type, budget, or travel dates to find your ideal trip.'],
+        ['fas fa-user-tie',        '02', 'Consult an Expert',       'Connect with our experienced travel consultants who will tailor every detail — flights, accommodation, activities — to match your vision.'],
+        ['fas fa-plane-departure', '03', 'Travel with Confidence',  'With 24/7 concierge support, expert local guides, and full travel documentation handled, all you need to do is enjoy the journey.'],
+      ];
+      foreach ($steps as $i => $step): ?>
+      <div style="text-align:center;padding:0 24px" data-animate data-delay="<?= $i * 120 ?>">
+        <div style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,var(--clr-primary) 0%,var(--clr-primary-l) 100%);margin-bottom:20px;box-shadow:0 8px 24px rgba(12,38,20,.25)">
+          <i class="<?= $step[0] ?>" style="font-size:1.7rem;color:#fff"></i>
+          <span style="position:absolute;top:-6px;right:-6px;width:26px;height:26px;border-radius:50%;background:var(--clr-gold);color:#fff;font-size:.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #fff"><?= $step[1] ?></span>
+        </div>
+        <h3 style="font-size:1.1rem;font-weight:700;color:var(--clr-primary);margin-bottom:10px"><?= $step[2] ?></h3>
+        <p style="color:var(--clr-muted);font-size:.9rem;line-height:1.65;max-width:260px;margin:0 auto"><?= $step[3] ?></p>
+      </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
      FEATURED PACKAGES
      ============================================================ -->
 <section class="section">
@@ -189,15 +234,24 @@ $categories          = getCategories();
 
     <div class="grid-3 grid-auto" id="packagesGrid">
       <?php foreach ($featuredPackages as $i => $pkg): ?>
+      <?php
+      $typeLabels = ['holiday'=>'Holiday','safari'=>'Safari','adventure'=>'Adventure','luxury'=>'Luxury','honeymoon'=>'Honeymoon','group'=>'Group Tour','corporate'=>'Corporate','educational'=>'Educational','religious'=>'Religious','custom'=>'Custom'];
+      $badgeLabel = $typeLabels[$pkg['type']] ?? ucfirst($pkg['type']);
+      $displayPrice = $pkg['sale_price'] ?: $pkg['base_price'];
+      $perLabel = match($pkg['price_per'] ?? 'person') { 'group' => '/ group', 'package' => '/ package', default => '/ person' };
+      $savePercent = ($pkg['sale_price'] && $pkg['base_price'] > 0) ? round((1 - $pkg['sale_price'] / $pkg['base_price']) * 100) : 0;
+      ?>
       <article class="package-card" data-animate data-delay="<?= $i * 80 ?>" data-cat="<?= h($pkg['type']) ?>">
         <div class="package-card-img">
           <a href="<?= url('package-detail.php?slug=' . h($pkg['slug'])) ?>">
             <img src="<?= h($pkg['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>"
                  alt="<?= h($pkg['title']) ?>" loading="lazy" decoding="async">
           </a>
-          <span class="package-badge"><?= h($pkg['type']) ?></span>
-          <button class="package-wishlist <?= isLoggedIn() ? '' : '' ?>"
-                  data-id="<?= $pkg['id'] ?>" title="Add to wishlist">
+          <span class="package-badge"><?= h($badgeLabel) ?></span>
+          <?php if ($savePercent >= 5): ?>
+          <span class="package-sale-badge">SAVE <?= $savePercent ?>%</span>
+          <?php endif; ?>
+          <button class="package-wishlist" data-id="<?= $pkg['id'] ?>" title="Add to wishlist">
             <i class="far fa-heart"></i>
           </button>
         </div>
@@ -212,12 +266,15 @@ $categories          = getCategories();
           <h3 class="package-title">
             <a href="<?= url('package-detail.php?slug=' . h($pkg['slug'])) ?>"><?= h($pkg['title']) ?></a>
           </h3>
-          <p class="package-excerpt"><?= h(excerpt($pkg['tagline'] ?: $pkg['description'], 110)) ?></p>
+          <p class="package-excerpt"><?= h(excerpt($pkg['tagline'] ?: ($pkg['description'] ?? ''), 110)) ?></p>
           <div class="package-footer">
             <div class="package-price">
               <span class="from">From</span>
-              <span class="amount"><?= money($pkg['base_price']) ?></span>
-              <span class="per">/ person</span>
+              <?php if ($pkg['sale_price']): ?>
+              <span class="amount-old"><?= money($pkg['base_price']) ?></span>
+              <?php endif; ?>
+              <span class="amount"><?= money($displayPrice) ?></span>
+              <span class="per"><?= $perLabel ?></span>
             </div>
             <a href="<?= url('package-detail.php?slug=' . h($pkg['slug'])) ?>" class="btn btn-primary btn-sm">
               View Details
@@ -241,11 +298,11 @@ $categories          = getCategories();
      ============================================================ -->
 <section style="background:linear-gradient(135deg,var(--clr-primary) 0%,var(--clr-primary-l) 100%);padding:80px 0;position:relative;overflow:hidden">
   <div style="position:absolute;right:-80px;top:-80px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.04)"></div>
-  <div style="position:absolute;left:-60px;bottom:-60px;width:300px;height:300px;border-radius:50%;background:rgba(212,160,23,.1)"></div>
+  <div style="position:absolute;left:-60px;bottom:-60px;width:300px;height:300px;border-radius:50%;background:rgba(246,162,41,.1)"></div>
   <div class="container" style="position:relative;z-index:1">
     <div class="grid-2" style="align-items:center;gap:64px">
       <div data-animate>
-        <span class="section-badge" style="background:rgba(212,160,23,.15);border-color:rgba(212,160,23,.3)">
+        <span class="section-badge" style="background:rgba(246,162,41,.15);border-color:rgba(246,162,41,.3)">
           <i class="fas fa-briefcase" style="margin-right:5px"></i> Corporate Solutions
         </span>
         <h2 style="color:#fff;font-size:2.4rem;margin:16px 0 20px;line-height:1.2">
@@ -308,7 +365,7 @@ $categories          = getCategories();
       <a href="<?= url('destinations.php?slug=' . h($dest['slug'])) ?>"
          class="destination-card" style="<?= $span ?>;border-radius:16px;overflow:hidden;display:block;position:relative">
         <img src="<?= h($img) ?>" alt="<?= h($dest['name']) ?>" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transition:transform .5s ease">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,59,102,.85) 0%,transparent 55%)"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(12,38,20,.85) 0%,transparent 55%)"></div>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:20px">
           <div style="font-size:.72rem;font-weight:700;color:var(--clr-gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px"><?= h($dest['country']) ?></div>
           <div style="font-size:<?= $i===0?'1.4rem':'1.1rem' ?>;font-weight:700;color:#fff"><?= h($dest['name']) ?></div>
@@ -322,7 +379,7 @@ $categories          = getCategories();
       <a href="<?= url('destinations.php?slug=' . h($dest['slug'])) ?>"
          style="border-radius:16px;overflow:hidden;display:block;position:relative">
         <img src="<?= h($img) ?>" alt="<?= h($dest['name']) ?>" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transition:transform .5s ease">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,59,102,.85) 0%,transparent 55%)"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(12,38,20,.85) 0%,transparent 55%)"></div>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:16px">
           <div style="font-size:.68rem;font-weight:700;color:var(--clr-gold);letter-spacing:.1em;text-transform:uppercase"><?= h($dest['country']) ?></div>
           <div style="font-size:1rem;font-weight:700;color:#fff"><?= h($dest['name']) ?></div>
@@ -346,7 +403,7 @@ $categories          = getCategories();
 <section class="section why-bg">
   <div class="container">
     <div class="section-header" data-animate>
-      <span class="section-badge" style="background:rgba(212,160,23,.15);border-color:rgba(212,160,23,.3)">
+      <span class="section-badge" style="background:rgba(246,162,41,.15);border-color:rgba(246,162,41,.3)">
         <i class="fas fa-award" style="margin-right:5px"></i> Our Difference
       </span>
       <h2 class="section-title" style="color:#fff">Why <span>Choose</span> MT Safaris?</h2>
@@ -381,7 +438,12 @@ $categories          = getCategories();
   <div class="container">
     <div class="grid-4">
       <?php
-      $stats = [['5,000+','Happy Travelers',5000],['150+','Destinations',150],['18','Years Experience',18],['98%','Satisfaction Rate',98]];
+      $stats = [
+        [number_format($sTravelers).'+',' Happy Travelers',   $sTravelers],
+        [$sDestinations.'+',            'Destinations',        $sDestinations],
+        [(string)$sYears,               'Years Experience',    $sYears],
+        [$sSatisfaction.'%',            'Satisfaction Rate',   $sSatisfaction],
+      ];
       foreach ($stats as $s): ?>
       <div class="stat-item" data-animate>
         <div class="stat-number"><span data-counter="<?= $s[2] ?>"><?= $s[2] ?></span><?= strpos($s[0],'+')!==false?'<span>+</span>':'' ?><?= strpos($s[0],'%')!==false?'<span>%</span>':'' ?></div>
@@ -490,7 +552,7 @@ $categories          = getCategories();
     <div style="max-width:660px;margin:0 auto;text-align:center">
       <span class="section-badge"><i class="fas fa-envelope" style="margin-right:5px"></i> Newsletter</span>
       <h2 style="color:#fff;font-size:2rem;margin:16px 0 12px">Stay Inspired on <span style="color:var(--clr-gold)">Every Journey</span></h2>
-      <p style="color:rgba(255,255,255,.75);margin-bottom:32px">Get exclusive travel deals, destination guides, and travel tips delivered straight to your inbox. Join 10,000+ subscribers.</p>
+      <p style="color:rgba(255,255,255,.75);margin-bottom:32px"><?= h(getSetting('newsletter_tagline', 'Get exclusive travel deals, destination guides, and travel tips delivered straight to your inbox. Join 10,000+ subscribers.')) ?></p>
       <form class="newsletter-form" style="display:flex;gap:12px;max-width:480px;margin:0 auto">
         <input type="email" placeholder="Enter your email address" required
                style="flex:1;padding:14px 20px;border-radius:999px;border:none;font-size:.9rem;outline:none">
@@ -508,8 +570,8 @@ $categories          = getCategories();
   <div class="container">
     <p class="text-center text-muted" style="font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:32px">CERTIFIED & TRUSTED PARTNERS</p>
     <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;opacity:.6;filter:grayscale(1)">
-      <?php foreach (['KATO','ATTA','IATA','Kenya Tourism Board','Tripadvisor'] as $partner): ?>
-      <div style="font-size:.9rem;font-weight:800;color:var(--clr-primary);letter-spacing:.08em;padding:10px 20px;background:#fff;border-radius:8px;border:1px solid var(--clr-border)"><?= $partner ?></div>
+      <?php foreach (array_map('trim', explode(',', getSetting('partners', 'KATO,ATTA,IATA,Kenya Tourism Board,Tripadvisor'))) as $partner): if (!$partner) continue; ?>
+      <div style="font-size:.9rem;font-weight:800;color:var(--clr-primary);letter-spacing:.08em;padding:10px 20px;background:#fff;border-radius:8px;border:1px solid var(--clr-border)"><?= h($partner) ?></div>
       <?php endforeach; ?>
     </div>
   </div>

@@ -155,7 +155,7 @@ $featured = DB::row("SELECT bp.*, bc.name AS category_name, CONCAT(u.first_name,
               All Categories <span style="color:var(--clr-muted)"><?= $result['total'] ?></span>
             </a>
             <?php foreach ($blogCategories as $bc): ?>
-            <a href="?category=<?= $bc['id'] ?>" style="display:flex;justify-content:space-between;padding:10px 20px;font-size:.875rem;color:<?= $catId==$bc['id']?'var(--clr-primary)':'var(--clr-text)' ?>;background:<?= $catId==$bc['id']?'rgba(13,59,102,.06)':'' ?>;border-bottom:1px solid var(--clr-border);transition:background .2s;font-weight:<?= $catId==$bc['id']?'600':'400' ?>" onmouseover="this.style.background='var(--clr-light)'" onmouseout="this.style.background='<?= $catId==$bc['id']?'rgba(13,59,102,.06)':'' ?>'">
+            <a href="?category=<?= $bc['id'] ?>" style="display:flex;justify-content:space-between;padding:10px 20px;font-size:.875rem;color:<?= $catId==$bc['id']?'var(--clr-primary)':'var(--clr-text)' ?>;background:<?= $catId==$bc['id']?'rgba(12,38,20,.06)':'' ?>;border-bottom:1px solid var(--clr-border);transition:background .2s;font-weight:<?= $catId==$bc['id']?'600':'400' ?>" onmouseover="this.style.background='var(--clr-light)'" onmouseout="this.style.background='<?= $catId==$bc['id']?'rgba(12,38,20,.06)':'' ?>'">
               <?= h($bc['name']) ?> <span style="color:var(--clr-muted)"><?= $bc['post_count'] ?></span>
             </a>
             <?php endforeach; ?>

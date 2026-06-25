@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf()) {
             <div style="display:flex;gap:10px;flex-wrap:wrap">
               <?php foreach (['general'=>'General','quote'=>'Get Quote','corporate'=>'Corporate','package'=>'Package Inquiry','callback'=>'Request Callback'] as $val=>$label): ?>
               <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:8px 14px;border:2px solid var(--clr-border);border-radius:20px;transition:all .2s"
-                     onclick="this.parentElement.querySelectorAll('label').forEach(l=>l.style.background='');l.parentElement.querySelectorAll('label').forEach(l=>l.style.borderColor='var(--clr-border)');this.style.background='rgba(13,59,102,.08)';this.style.borderColor='var(--clr-primary)'">
+                     onclick="this.parentElement.querySelectorAll('label').forEach(l=>l.style.background='');l.parentElement.querySelectorAll('label').forEach(l=>l.style.borderColor='var(--clr-border)');this.style.background='rgba(12,38,20,.08)';this.style.borderColor='var(--clr-primary)'">
                 <input type="radio" name="type" value="<?= $val ?>" <?= ($val==='general')?'checked':'' ?> style="display:none">
                 <?= $label ?>
               </label>

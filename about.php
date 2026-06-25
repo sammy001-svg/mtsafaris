@@ -128,7 +128,7 @@ $milestones = [
       ];
       foreach ($values as $i => $v): ?>
       <div style="text-align:center;padding:36px 24px;border-radius:16px;border:1px solid var(--clr-border);background:#fff;transition:all .25s" data-animate data-delay="<?= $i*80 ?>">
-        <div style="width:68px;height:68px;background:linear-gradient(135deg,rgba(13,59,102,.1),rgba(59,175,218,.1));border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.6rem;color:var(--clr-primary)">
+        <div style="width:68px;height:68px;background:linear-gradient(135deg,rgba(12,38,20,.1),rgba(12,38,20,.05));border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.6rem;color:var(--clr-primary)">
           <i class="<?= $v[0] ?>"></i>
         </div>
         <h4 style="color:var(--clr-primary);margin-bottom:10px"><?= $v[1] ?></h4>

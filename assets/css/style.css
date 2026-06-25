@@ -569,7 +569,20 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--ff-head); line-height: 1.25; font-weight:
 .package-price { display: flex; flex-direction: column; }
 .package-price .from { font-size: .72rem; color: var(--clr-muted); display: block; }
 .package-price .amount { font-size: 1.4rem; font-weight: 800; font-family: var(--ff-head); color: var(--clr-primary); }
+.package-price .amount-old { font-size: .8rem; color: var(--clr-muted); text-decoration: line-through; }
 .package-price .per { font-size: .72rem; color: var(--clr-muted); }
+.package-sale-badge {
+  position: absolute;
+  top: 14px; right: 58px;
+  background: #E53E3E;
+  color: #fff;
+  font-size: .65rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
 .stars { color: var(--clr-gold); font-size: .8rem; }
 .stars + .review-count { font-size: .75rem; color: var(--clr-muted); margin-left: 4px; }
 
