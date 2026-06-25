@@ -1482,6 +1482,67 @@ img[data-src] {
 [data-animate].animated { opacity: 1; transform: translateY(0); }
 
 /* ============================================================
+   SEMANTIC LAYOUT CLASSES (replaces inline grid styles)
+   Defined here so breakpoints can override them cleanly.
+   ============================================================ */
+
+/* Two-column content + sticky sidebar (package detail, booking) */
+.pkg-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Destinations masonry (4-col, 2-row, first card spans 2×2) */
+.dest-masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 220px);
+  gap: 16px;
+}
+.dest-masonry-grid .dest-featured {
+  grid-row: span 2;
+  grid-column: span 2;
+}
+
+/* Package detail gallery thumbnails */
+.pkg-gallery-thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+/* Package quick-stats strip (Duration / Group Size / etc.) */
+.pkg-quick-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+/* How It Works connector bar */
+.hiw-connector {
+  position: absolute;
+  top: 44px;
+  left: calc(16.67% + 44px);
+  right: calc(16.67% + 44px);
+  height: 2px;
+  background: linear-gradient(90deg, var(--clr-gold), var(--clr-primary));
+  opacity: .25;
+  pointer-events: none;
+}
+
+/* Corporate service feature list */
+.corp-features-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1200px) {
@@ -1522,6 +1583,212 @@ img[data-src] {
   .btn { padding: 11px 22px; font-size: .85rem; }
   .btn-lg { padding: 14px 28px; }
   .stat-number { font-size: 2rem; }
+}
+
+/* ============================================================
+   RESPONSIVE — EXTENDED (semantic layout + remaining gaps)
+   ============================================================ */
+
+/* 1100px — wide tablet landscape */
+@media (max-width: 1100px) {
+  .pkg-detail-layout { grid-template-columns: 1fr 320px; gap: 32px; }
+}
+
+/* 900px — tablet portrait */
+@media (max-width: 900px) {
+  /* Package detail / booking → single column, widget goes below */
+  .pkg-detail-layout { grid-template-columns: 1fr; gap: 28px; }
+  .pkg-detail-layout .booking-widget { position: static !important; }
+
+  /* Destinations masonry → 2-col (remove featured span) */
+  .dest-masonry-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 200px);
+  }
+  .dest-masonry-grid .dest-featured,
+  .dest-masonry-grid > :first-child {
+    grid-row: auto !important;
+    grid-column: auto !important;
+  }
+
+  /* About image grid height relaxed */
+  .about-img-grid { height: 380px; }
+  .about-img-grid .main-img { height: auto; }
+
+  /* Gallery thumbs + quick stats → 3-col */
+  .pkg-gallery-thumbs,
+  .pkg-quick-stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* 768px — mobile landscape / tablet portrait edge */
+@media (max-width: 768px) {
+  /* How It Works connector hidden when steps stack vertically */
+  .hiw-connector { display: none !important; }
+
+  /* Hero stats → 2×2 grid */
+  .hero-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .hero-stat-num { font-size: 1.75rem; }
+  .hero-badge { font-size: .75rem; padding: 6px 14px; }
+
+  /* Newsletter form → stacked */
+  .newsletter-form { flex-direction: column; max-width: 400px; }
+  .newsletter-form input  { border-radius: var(--radius-sm); }
+  .newsletter-form .btn   { border-radius: var(--radius-sm); justify-content: center; }
+
+  /* Inner page hero */
+  .page-hero { padding: 100px 0 48px; }
+
+  /* Package hero shorter on mobile */
+  .package-hero { height: 50vh; min-height: 300px; }
+
+  /* Gallery thumbs + quick stats → 2-col */
+  .pkg-gallery-thumbs,
+  .pkg-quick-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+  /* About image grid → single column */
+  .about-img-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+    gap: 8px;
+  }
+  .about-img-grid .main-img { grid-row: auto; height: 240px; }
+  .about-img-grid .sub-img  { height: 170px; }
+
+  /* About experience badge → static (not overflow-positioned) */
+  .about-badge { position: static; display: inline-block; margin-top: 20px; }
+
+  /* Section header tighter */
+  .section-header { margin-bottom: 36px; }
+
+  /* Destination card aspect ratio normalized */
+  .destination-card.large { aspect-ratio: 3/4; }
+
+  /* Booking steps — collapse step labels, hide connector */
+  .booking-step::after { display: none; }
+  .step-label          { display: none; }
+  .booking-steps       { gap: 8px; }
+
+  /* Portal main padding tighter */
+  .portal-main { padding: 24px 16px; }
+
+  /* Stat section padding tighter */
+  .stat-item { padding: 28px 16px; }
+
+  /* Gallery grid 2-col */
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+  /* Blog card meta wraps */
+  .blog-meta { flex-wrap: wrap; gap: 8px; }
+
+  /* Tab nav items smaller */
+  .tab-nav-item { padding: 10px 14px; font-size: .82rem; }
+
+  /* Mobile nav active link */
+  .mobile-nav a.active { color: var(--clr-gold) !important; }
+}
+
+/* 576px — small mobile landscape / large portrait */
+@media (max-width: 576px) {
+  /* Hero CTA buttons stretch full width */
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { justify-content: center; }
+
+  /* Corporate features list → single column */
+  .corp-features-list { grid-template-columns: 1fr; gap: 8px; }
+
+  /* Category & package tabs → horizontal scroll strip */
+  .category-tabs,
+  .pkg-filter-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 6px;
+    scrollbar-width: none; /* Firefox 121+ */
+  }
+  .category-tabs::-webkit-scrollbar,
+  .pkg-filter-tabs::-webkit-scrollbar { display: none; } /* Chrome, Safari */
+  .cat-tab,
+  .pkg-filter-tab { flex-shrink: 0; }
+
+  /* Booking widget form rows → stacked */
+  .booking-widget-body .form-row { grid-template-columns: 1fr; }
+
+  /* Package cards body tighter */
+  .package-card-body { padding: 16px 18px 18px; }
+  .package-price .amount { font-size: 1.2rem; }
+}
+
+/* 480px — standard mobile portrait */
+@media (max-width: 480px) {
+  /* Hero */
+  .hero-stats  { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .hero-stat-num   { font-size: 1.5rem; }
+  .hero-stat-label { font-size: .72rem; }
+  .hero-subtitle   { font-size: 1rem; }
+  .hero-dots { bottom: 70px; }
+
+  /* Destinations masonry → single column */
+  .dest-masonry-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+  .dest-masonry-grid > * { height: 200px; }
+
+  /* Gallery thumbnails + quick stats → 2-col */
+  .pkg-gallery-thumbs,
+  .pkg-quick-stats { grid-template-columns: repeat(2, 1fr); }
+
+  /* Gallery grid 2-col */
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Itinerary day tiles */
+  .day-number { width: 48px; height: 48px; }
+  .day-number .num { font-size: 1rem; }
+
+  /* Accordion body height for longer answers */
+  .accordion-item.open .accordion-body { max-height: 500px; }
+
+  /* Team card */
+  .team-card { padding: 24px 16px; }
+
+  /* Footer */
+  .footer { padding-top: 48px; }
+  .footer-col h4 { font-size: .85rem; margin-bottom: 14px; }
+
+  /* Testimonials card */
+  .testimonial-card { padding: 24px 20px; }
+
+  /* Stats */
+  .stat-number { font-size: 1.75rem; }
+  .stat-label  { font-size: .75rem; }
+
+  /* Compare bar stacked on very small screens */
+  #compareBar { flex-wrap: wrap; gap: 10px; padding: 14px 16px; }
+  .compare-bar-slots { justify-content: center; }
+
+  /* WhatsApp float — icon-only pill on very small screens */
+  .whatsapp-float .wa-text { display: none; }
+  .whatsapp-float a { padding: 14px; border-radius: var(--radius-full); }
+
+  /* Flash message stays within viewport */
+  .flash-msg { font-size: .85rem; }
+}
+
+/* ============================================================
+   TOUCH / POINTER IMPROVEMENTS
+   ============================================================ */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets on touch screens */
+  .nav-link       { padding: 10px 16px; }
+  .dropdown-menu a { padding: 14px 16px; }
+  .btn-tbl        { width: 38px; height: 38px; font-size: .9rem; }
+  .cat-tab        { padding: 12px 20px; }
+  .pkg-filter-tab { padding: 10px 20px; }
+  /* Disable hover-only transforms that don't translate to touch */
+  .package-card:hover  { transform: none; }
+  .feature-card:hover  { transform: none; }
+  .destination-card:hover img { transform: none; }
 }
 
 /* =============================================================

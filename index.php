@@ -185,7 +185,7 @@ require_once 'includes/header.php';
     </div>
     <div class="grid-3" style="gap:0;position:relative">
       <!-- connector line -->
-      <div style="position:absolute;top:44px;left:calc(16.67% + 44px);right:calc(16.67% + 44px);height:2px;background:linear-gradient(90deg,var(--clr-gold),var(--clr-primary));opacity:.25;display:block" aria-hidden="true"></div>
+      <div class="hiw-connector" aria-hidden="true"></div>
       <?php
       $steps = [
         ['fas fa-search-location', '01', 'Choose Your Journey',     'Browse our curated safari, holiday, and adventure packages. Filter by destination, type, budget, or travel dates to find your ideal trip.'],
@@ -311,7 +311,7 @@ require_once 'includes/header.php';
         <p style="color:rgba(255,255,255,.8);margin-bottom:32px;font-size:1.05rem;line-height:1.7">
           Comprehensive corporate travel management, conference planning, executive transfers, and team retreat packages — tailored for your organization's needs.
         </p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:36px">
+        <div class="corp-features-list">
           <?php foreach (['Business Travel','Conference Management','Team Retreats','Airport Transfers','Visa Support','Travel Insurance'] as $s): ?>
           <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.85);font-size:.875rem">
             <i class="fas fa-check-circle" style="color:var(--clr-gold)"></i> <?= $s ?>
@@ -357,13 +357,13 @@ require_once 'includes/header.php';
     </div>
 
     <?php if ($featuredDestinations): ?>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,220px);gap:16px" data-animate>
+    <div class="dest-masonry-grid" data-animate>
       <?php foreach ($featuredDestinations as $i => $dest):
-        $span = $i === 0 ? 'grid-row:span 2;grid-column:span 2' : '';
-        $img  = $dest['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80';
+        $featuredClass = $i === 0 ? 'dest-featured' : '';
+        $img           = $dest['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80';
       ?>
       <a href="<?= url('destinations.php?slug=' . h($dest['slug'])) ?>"
-         class="destination-card" style="<?= $span ?>;border-radius:16px;overflow:hidden;display:block;position:relative">
+         class="destination-card <?= $featuredClass ?>" style="border-radius:16px;overflow:hidden;display:block;position:relative">
         <img src="<?= h($img) ?>" alt="<?= h($dest['name']) ?>" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transition:transform .5s ease">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(12,38,20,.85) 0%,transparent 55%)"></div>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:20px">

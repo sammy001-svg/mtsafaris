@@ -88,12 +88,12 @@ require_once 'includes/header.php';
 <!-- Main Content -->
 <section class="section-sm">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:40px;align-items:start">
+    <div class="pkg-detail-layout">
 
       <!-- LEFT: Package Info -->
       <div>
         <!-- Quick Stats -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:36px">
+        <div class="pkg-quick-stats">
           <?php
           $qs = [
             ['fas fa-clock','Duration',$pkg['duration_days'].' Days / '.$pkg['duration_nights'].' Nights'],

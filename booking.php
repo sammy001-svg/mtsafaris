@@ -132,7 +132,7 @@ $basePrice = (float)($pkg['sale_price'] ?: $pkg['base_price']);
     </div>
     <?php endif; ?>
 
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:start">
+    <div class="pkg-detail-layout" style="gap:36px">
 
       <!-- BOOKING FORM -->
       <form method="POST" action="booking.php?package=<?= $pkgId ?>" id="bookingForm">

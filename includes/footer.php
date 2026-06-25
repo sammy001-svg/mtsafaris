@@ -102,7 +102,7 @@ $categories  = getCategories();
 <div class="whatsapp-float">
   <a href="https://wa.me/<?= CONTACT_WHATSAPP ?>?text=Hello%2C%20I%27m%20interested%20in%20your%20travel%20packages." target="_blank" rel="noopener">
     <i class="fab fa-whatsapp"></i>
-    <span>Chat with Us</span>
+    <span class="wa-text">Chat with Us</span>
   </a>
 </div>
 

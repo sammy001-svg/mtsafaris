@@ -165,13 +165,13 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
       <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" class="site-logo-img">
     </div>
   </div>
-  <a href="<?= url() ?>">Home</a>
-  <a href="<?= url('packages.php') ?>">Tour Packages</a>
-  <a href="<?= url('destinations.php') ?>">Destinations</a>
-  <a href="<?= url('corporate.php') ?>">Corporate Travel</a>
-  <a href="<?= url('blog.php') ?>">Blog</a>
-  <a href="<?= url('about.php') ?>">About Us</a>
-  <a href="<?= url('contact.php') ?>">Contact</a>
+  <a href="<?= url() ?>"               class="<?= isActive('index.php') ?>">Home</a>
+  <a href="<?= url('packages.php') ?>"   class="<?= isActive('packages.php') ?>">Tour Packages</a>
+  <a href="<?= url('destinations.php') ?>" class="<?= isActive('destinations.php') ?>">Destinations</a>
+  <a href="<?= url('corporate.php') ?>"  class="<?= isActive('corporate.php') ?>">Corporate Travel</a>
+  <a href="<?= url('blog.php') ?>"       class="<?= isActive('blog.php') ?>">Blog</a>
+  <a href="<?= url('about.php') ?>"      class="<?= isActive('about.php') ?>">About Us</a>
+  <a href="<?= url('contact.php') ?>"    class="<?= isActive('contact.php') ?>">Contact</a>
   <div style="margin-top:24px;display:flex;gap:10px;flex-direction:column">
     <?php if ($user): ?>
     <a href="<?= url('portal/') ?>" class="btn btn-outline-white">My Dashboard</a>
