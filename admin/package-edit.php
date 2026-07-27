@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category_id    = (int)($_POST['category_id'] ?? 0);
     $destination_id = (int)($_POST['destination_id'] ?? 0);
     $tagline        = trim($_POST['tagline'] ?? '');
-    $overview       = trim($_POST['overview'] ?? '');
+    $overview       = clean_html($_POST['overview'] ?? '');
     $duration_days  = (int)($_POST['duration_days'] ?? 1);
     $duration_nights= (int)($_POST['duration_nights'] ?? 0);
     $min_pax        = (int)($_POST['min_pax'] ?? 1);
@@ -278,8 +278,8 @@ $depDates = implode("\n", jd($p['departure_dates']?? '[]', []));
               <div class="form-group" style="margin-bottom:0">
                 <label class="form-label">Overview / Full Description</label>
                 <div id="overviewEditor" class="pkg-editor-content" contenteditable="true"
-                     data-placeholder="Write a detailed overview of this package…"><?= $p['overview'] ?? '' ?></div>
-                <input type="hidden" name="overview" id="overview_field" value="<?= h($p['overview'] ?? '') ?>">
+                     data-placeholder="Write a detailed overview of this package…"><?= clean_html($p['overview'] ?? '') ?></div>
+                <input type="hidden" name="overview" id="overview_field" value="<?= h(clean_html($p['overview'] ?? '')) ?>">
               </div>
             </div>
           </div>
@@ -777,6 +777,12 @@ document.querySelectorAll('.faq-remove').forEach(btn => btn.addEventListener('cl
 }
 .pkg-editor-content:focus { border-color: var(--clr-primary); box-shadow: 0 0 0 3px rgba(13,59,102,.08); }
 .pkg-editor-content:empty::before { content: attr(data-placeholder); color: var(--clr-muted); pointer-events: none; }
+/* admin.css resets list-style globally — restore it so the editor matches the live page */
+.pkg-editor-content p { margin-bottom: 1em; }
+.pkg-editor-content h2, .pkg-editor-content h3, .pkg-editor-content h4 { color: var(--clr-primary); margin: 1.25em 0 .5em; }
+.pkg-editor-content ul, .pkg-editor-content ol { margin: 1em 0 1em 1.5em; }
+.pkg-editor-content ul { list-style: disc; }
+.pkg-editor-content ol { list-style: decimal; }
 
 /* Itinerary item */
 .itin-item {

@@ -119,8 +119,8 @@ require_once 'includes/header.php';
           <!-- Overview -->
           <div data-panel="overview" class="active">
             <h3 style="color:var(--clr-primary);margin-bottom:16px">Package Overview</h3>
-            <div style="color:var(--clr-muted);line-height:1.8;font-size:.9rem">
-              <?= nl2br(h($pkg['overview'] ?: $pkg['description'])) ?>
+            <div class="rich-text" style="color:var(--clr-muted);line-height:1.8;font-size:.9rem">
+              <?= clean_html($pkg['overview'] ?: $pkg['description']) ?>
             </div>
             <?php if ($pkg['video_url']): ?>
             <div style="margin-top:28px">

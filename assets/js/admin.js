@@ -296,4 +296,88 @@
     setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; setTimeout(() => toast.remove(), 300); }, 3500);
   };
 
+  // ---- Rich text editor paste cleanup ----
+  // Mirrors clean_html() in includes/functions.php. Pasting from ChatGPT, Word or
+  // Google Docs carries that app's own markup (nested divs, framework classes,
+  // data-* attributes) which otherwise lands in the DB and renders as garbage.
+  const ALLOWED_TAGS = {
+    P: [], BR: [], HR: [],
+    STRONG: [], B: [], EM: [], I: [], U: [], S: [],
+    SUP: [], SUB: [], CODE: [], PRE: [], BLOCKQUOTE: [],
+    H2: [], H3: [], H4: [], H5: [], H6: [],
+    UL: [], OL: [], LI: [],
+    TABLE: [], THEAD: [], TBODY: [], TR: [], TH: [], TD: [],
+    A: ['href', 'title', 'target', 'rel'],
+    IMG: ['src', 'alt', 'title']
+  };
+  const UNWRAP_TAGS = ['DIV','SPAN','SECTION','ARTICLE','MAIN','ASIDE','HEADER','FOOTER',
+                       'NAV','FIGURE','FIGCAPTION','FONT','LABEL','SMALL','TIME','MARK'];
+  const STRIP_TAGS  = ['SCRIPT','STYLE','NOSCRIPT','IFRAME','OBJECT','EMBED','SVG','CANVAS',
+                       'FORM','INPUT','SELECT','TEXTAREA','BUTTON','META','LINK'];
+
+  function cleanNode(node) {
+    // Snapshot first: the live child list shifts as we remove nodes.
+    Array.from(node.childNodes).forEach(child => {
+      if (child.nodeType === Node.COMMENT_NODE) { child.remove(); return; }
+      if (child.nodeType !== Node.ELEMENT_NODE)  { return; }
+
+      const tag = child.tagName;
+
+      if (STRIP_TAGS.includes(tag)) { child.remove(); return; }
+
+      if (UNWRAP_TAGS.includes(tag) || !(tag in ALLOWED_TAGS)) {
+        cleanNode(child);
+        // Hoist the children out, then drop the wrapper itself.
+        while (child.firstChild) node.insertBefore(child.firstChild, child);
+        child.remove();
+        return;
+      }
+
+      const allowed = ALLOWED_TAGS[tag];
+      Array.from(child.attributes).forEach(attr => {
+        if (!allowed.includes(attr.name.toLowerCase())) child.removeAttribute(attr.name);
+      });
+      // Block javascript: and other script-bearing URL schemes.
+      ['href', 'src'].forEach(a => {
+        const v = (child.getAttribute(a) || '').trim();
+        if (v && /^[a-z][a-z0-9+.-]*:/i.test(v) &&
+            !/^(https?|mailto|tel):/i.test(v) &&
+            !/^data:image\/(png|jpe?g|gif|webp);base64,/i.test(v)) {
+          child.removeAttribute(a);
+        }
+      });
+      if (tag === 'A' && child.getAttribute('target') === '_blank') {
+        child.setAttribute('rel', 'noopener noreferrer');
+      }
+
+      cleanNode(child);
+    });
+  }
+
+  window.sanitizePastedHtml = function (html) {
+    const holder = document.createElement('div');
+    holder.innerHTML = html;
+    cleanNode(holder);
+    return holder.innerHTML.replace(/<p>\s*(<br\s*\/?>)?\s*<\/p>/gi, '').trim();
+  };
+
+  // Intercept paste on every rich text editor and insert the cleaned markup.
+  document.querySelectorAll('[contenteditable="true"]').forEach(editor => {
+    editor.addEventListener('paste', function (e) {
+      e.preventDefault();
+      const cb   = e.clipboardData || window.clipboardData;
+      const html = cb.getData('text/html');
+      let out;
+      if (html) {
+        out = window.sanitizePastedHtml(html);
+      } else {
+        // Plain text: escape it, then keep the author's paragraph breaks.
+        const esc = cb.getData('text/plain')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        out = esc.split(/\n{2,}/).map(b => '<p>' + b.replace(/\n/g, '<br>') + '</p>').join('');
+      }
+      document.execCommand('insertHTML', false, out);
+    });
+  });
+
 })();

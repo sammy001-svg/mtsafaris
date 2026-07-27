@@ -1820,3 +1820,65 @@ tbody td { padding: 14px 16px; font-size: .875rem; color: var(--clr-text); }
 .compare-pkg-name { font-weight: 700; color: var(--clr-primary); font-size: .95rem; }
 .compare-feature-yes { color: var(--clr-success); }
 .compare-feature-no  { color: var(--clr-danger); opacity: .5; }
+
+/* ============================================================
+   RICH TEXT — sanitized editor output (clean_html)
+   Restores typography the global reset strips, scoped so it
+   never leaks into layout markup.
+   ============================================================ */
+.rich-text > *:first-child { margin-top: 0; }
+.rich-text > *:last-child  { margin-bottom: 0; }
+.rich-text p { margin-bottom: 1.15em; }
+.rich-text h2, .rich-text h3, .rich-text h4, .rich-text h5, .rich-text h6 {
+  margin: 1.6em 0 .6em;
+  color: var(--clr-primary);
+}
+.rich-text h2 { font-size: 1.5rem; }
+.rich-text h3 { font-size: 1.25rem; }
+.rich-text h4 { font-size: 1.075rem; }
+.rich-text ul, .rich-text ol { margin: 0 0 1.15em 1.5em; }
+.rich-text ul { list-style: disc; }
+.rich-text ol { list-style: decimal; }
+.rich-text li { margin-bottom: .4em; }
+.rich-text li::marker { color: var(--clr-gold); }
+.rich-text strong, .rich-text b { color: var(--clr-primary); font-weight: 700; }
+.rich-text a {
+  color: var(--clr-gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.rich-text a:hover { opacity: .8; }
+.rich-text blockquote {
+  margin: 1.5em 0;
+  padding: 4px 0 4px 20px;
+  border-left: 3px solid var(--clr-gold);
+  font-style: italic;
+  color: var(--clr-muted);
+}
+.rich-text img { margin: 1.5em 0; border-radius: var(--radius-md); }
+.rich-text hr { margin: 2em 0; border: none; border-top: 1px solid var(--clr-border); }
+.rich-text code {
+  background: var(--clr-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: .9em;
+}
+.rich-text pre {
+  background: var(--clr-light);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: 1.15em;
+}
+.rich-text pre code { background: none; padding: 0; }
+.rich-text table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.15em;
+}
+.rich-text th, .rich-text td {
+  border: 1px solid var(--clr-border);
+  padding: 10px 12px;
+  text-align: left;
+}
+.rich-text th { background: var(--clr-light); font-weight: 700; color: var(--clr-primary); }

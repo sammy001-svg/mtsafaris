@@ -99,8 +99,8 @@ require_once 'includes/header.php';
     <div style="display:grid;grid-template-columns:1fr 320px;gap:48px;align-items:start">
       <!-- Main Content -->
       <div>
-        <article class="blog-content" style="line-height:1.9;color:#374151;font-size:1.0625rem">
-          <?= $post['body'] ?>
+        <article class="blog-content rich-text" style="line-height:1.9;color:#374151;font-size:1.0625rem">
+          <?= clean_html($post['body']) ?>
         </article>
 
         <?php if ($tags): ?>

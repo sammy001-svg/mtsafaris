@@ -22,6 +22,139 @@ function excerpt(string $text, int $length = 160): string {
     return mb_substr($text, 0, $length) . '…';
 }
 
+// Rich-text whitelist. Tag => attributes allowed on it.
+const RICH_TEXT_TAGS = [
+    'p' => [], 'br' => [], 'hr' => [],
+    'strong' => [], 'b' => [], 'em' => [], 'i' => [], 'u' => [], 's' => [],
+    'sup' => [], 'sub' => [], 'code' => [], 'pre' => [], 'blockquote' => [],
+    'h2' => [], 'h3' => [], 'h4' => [], 'h5' => [], 'h6' => [],
+    'ul' => [], 'ol' => [], 'li' => [],
+    'table' => [], 'thead' => [], 'tbody' => [], 'tr' => [], 'th' => [], 'td' => [],
+    'a'   => ['href', 'title', 'target', 'rel'],
+    'img' => ['src', 'alt', 'title'],
+];
+
+// Wrappers whose children we keep but whose tag (and its classes) we drop.
+const RICH_TEXT_UNWRAP = [
+    'div', 'span', 'section', 'article', 'main', 'aside', 'header', 'footer',
+    'nav', 'figure', 'figcaption', 'font', 'label', 'small', 'time', 'mark',
+];
+
+// Elements dropped along with everything inside them.
+const RICH_TEXT_STRIP = [
+    'script', 'style', 'noscript', 'iframe', 'object', 'embed', 'svg', 'canvas',
+    'form', 'input', 'select', 'textarea', 'button', 'meta', 'link', 'head', 'title',
+];
+
+/**
+ * Sanitize rich-text HTML from the admin editors down to a safe whitelist.
+ *
+ * Pasted content (e.g. from ChatGPT or Word) arrives carrying the source app's
+ * own markup — nested divs, framework class names, data-* attributes. This keeps
+ * the semantic tags, drops presentational wrappers, and strips every attribute
+ * that isn't explicitly allowed. Plain text (no tags) is converted to paragraphs.
+ *
+ * Applied both on save and on render, so rows stored before this existed are
+ * cleaned on the way out too.
+ */
+function clean_html(?string $html): string {
+    $html = trim((string)$html);
+    if ($html === '') return '';
+
+    // No markup at all — treat as plain text and keep the author's line breaks.
+    if (strip_tags($html) === $html) {
+        return nl2br(h($html));
+    }
+
+    $doc = new DOMDocument();
+    $doc->encoding = 'UTF-8';
+    $prev = libxml_use_internal_errors(true);
+    // The XML declaration pins UTF-8 without mangling multibyte characters.
+    $doc->loadHTML(
+        '<?xml encoding="UTF-8"?><div id="mts-root">' . $html . '</div>',
+        LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED
+    );
+    libxml_clear_errors();
+    libxml_use_internal_errors($prev);
+
+    $root = $doc->getElementById('mts-root');
+    if (!$root) return nl2br(h(strip_tags($html)));
+
+    clean_html_node($root);
+
+    $out = '';
+    foreach ($root->childNodes as $child) {
+        $out .= $doc->saveHTML($child);
+    }
+
+    // Collapse the empty paragraphs pasted markup tends to leave behind.
+    $out = preg_replace('#<p>\s*(<br\s*/?>)?\s*</p>#i', '', $out);
+    return trim($out);
+}
+
+/** Recursively filter a node's children against the whitelist. */
+function clean_html_node(DOMNode $node): void {
+    // Snapshot first: the live child list shifts as we remove nodes.
+    foreach (iterator_to_array($node->childNodes) as $child) {
+        if ($child instanceof DOMComment) {
+            $node->removeChild($child);
+            continue;
+        }
+        if (!($child instanceof DOMElement)) {
+            continue; // text nodes pass through
+        }
+
+        $tag = strtolower($child->nodeName);
+
+        if (in_array($tag, RICH_TEXT_STRIP, true)) {
+            $node->removeChild($child);
+            continue;
+        }
+
+        if (in_array($tag, RICH_TEXT_UNWRAP, true) || !isset(RICH_TEXT_TAGS[$tag])) {
+            clean_html_node($child);
+            // Hoist the children into the parent, then drop the wrapper itself.
+            while ($child->firstChild) {
+                $node->insertBefore($child->firstChild, $child);
+            }
+            $node->removeChild($child);
+            continue;
+        }
+
+        clean_html_attrs($child, $tag);
+        clean_html_node($child);
+    }
+}
+
+/** Drop every attribute not whitelisted for this tag, and neutralise unsafe URLs. */
+function clean_html_attrs(DOMElement $el, string $tag): void {
+    $allowed = RICH_TEXT_TAGS[$tag];
+
+    foreach (iterator_to_array($el->attributes) as $attr) {
+        if (!in_array(strtolower($attr->nodeName), $allowed, true)) {
+            $el->removeAttribute($attr->nodeName);
+        }
+    }
+
+    foreach (['href' => 'a', 'src' => 'img'] as $urlAttr => $urlTag) {
+        if ($tag !== $urlTag || !$el->hasAttribute($urlAttr)) continue;
+        $url = trim($el->getAttribute($urlAttr));
+        // Allow http(s), protocol-relative, root/relative paths, mailto, tel and data images.
+        $safe = preg_match('#^(https?:)?//#i', $url)
+             || preg_match('#^(mailto:|tel:|/|\#|\.{0,2}/)#i', $url)
+             || ($urlTag === 'img' && preg_match('#^data:image/(png|jpe?g|gif|webp|svg\+xml);base64,#i', $url))
+             || (!preg_match('#^[a-z][a-z0-9+.-]*:#i', $url) && $url !== '');
+        if (!$safe) {
+            $el->removeAttribute($urlAttr);
+        }
+    }
+
+    // External links open in a new tab; never leak the referrer or window handle.
+    if ($tag === 'a' && $el->getAttribute('target') === '_blank') {
+        $el->setAttribute('rel', 'noopener noreferrer');
+    }
+}
+
 function money(float $amount, string $currency = 'USD'): string {
     return '$' . number_format($amount, 2);
 }

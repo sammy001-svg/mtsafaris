@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $slug_in      = trim($_POST['slug'] ?? '');
     $slug_val     = $slug_in ?: slug($title);
     $excerpt_text = trim($_POST['excerpt'] ?? '');
-    $content      = $_POST['content'] ?? '';
+    $content      = clean_html($_POST['content'] ?? '');
     $category_id  = (int)($_POST['category_id'] ?? 0);
     $status       = in_array($_POST['status'] ?? 'draft', ['published','draft','archived']) ? $_POST['status'] : 'draft';
     $is_featured  = isset($_POST['is_featured']) ? 1 : 0;
@@ -210,8 +210,8 @@ $tags = implode(', ', jd($p['tags'] ?? '[]', []));
             </div>
             <div style="padding:0">
               <div id="blogEditor" class="blog-editor-content" contenteditable="true"
-                   data-placeholder="Start writing your blog post…"><?= $p['content'] ?? '' ?></div>
-              <input type="hidden" name="content" id="contentField" value="<?= h($p['content'] ?? '') ?>">
+                   data-placeholder="Start writing your blog post…"><?= clean_html($p['content'] ?? '') ?></div>
+              <input type="hidden" name="content" id="contentField" value="<?= h(clean_html($p['content'] ?? '')) ?>">
             </div>
           </div>
 
@@ -386,6 +386,9 @@ updateCount('metaDescEl',  'metaDescCount',  160);
 .blog-editor-content h2, .blog-editor-content h3 { color: var(--clr-primary); margin: 1.25em 0 .5em; }
 .blog-editor-content p { margin-bottom: 1em; }
 .blog-editor-content ul, .blog-editor-content ol { margin: 1em 0 1em 1.5em; }
+/* admin.css resets list-style globally — restore it so the editor matches the live page */
+.blog-editor-content ul { list-style: disc; }
+.blog-editor-content ol { list-style: decimal; }
 .blog-editor-content blockquote { border-left: 4px solid var(--clr-primary); padding: 12px 16px; background: #f8fafc; margin: 1em 0; color: var(--clr-muted); font-style: italic; }
 
 .editor-toolbar { display: flex; gap: 4px; flex-wrap: wrap; padding: 8px 12px; border-top: 1px solid var(--clr-border); border-bottom: 1px solid var(--clr-border); background: var(--clr-light); }
