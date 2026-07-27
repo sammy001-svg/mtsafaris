@@ -15,7 +15,8 @@
       "PowerShell(Get-Process -Name \"mysqld\" -ErrorAction SilentlyContinue)",
       "Bash(gh repo *)",
       "Bash(grep -n 'post\\\\['\\\\''body'\\\\''\\\\]\\\\|post\\\\['\\\\''content'\\\\''\\\\]\\\\|$post\\\\[' blog-detail.php)",
-      "Bash(php -r \"var_dump\\(class_exists\\('DOMDocument'\\), function_exists\\('mb_convert_encoding'\\)\\);\")"
+      "Bash(php -r \"var_dump\\(class_exists\\('DOMDocument'\\), function_exists\\('mb_convert_encoding'\\)\\);\")",
+      "Bash(xargs -I{} basename {})"
     ]
   }
 }

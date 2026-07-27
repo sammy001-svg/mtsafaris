@@ -43,7 +43,7 @@ $pkgs = DB::rows("SELECT p.*, d.name AS destination_name FROM packages p LEFT JO
       <div style="padding:28px;border-radius:16px;background:#fff;border:1px solid var(--clr-border);transition:all .25s" data-animate data-delay="<?= $i*60 ?>"
            onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--shadow-lg)'"
            onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <div style="width:56px;height:56px;background:rgba(13,59,102,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--clr-primary);margin-bottom:16px">
+        <div style="width:56px;height:56px;background:rgba(12,38,20,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--clr-primary);margin-bottom:16px">
           <i class="<?= $s[0] ?>"></i>
         </div>
         <h4 style="color:var(--clr-primary);margin-bottom:10px"><?= $s[1] ?></h4>
@@ -69,7 +69,7 @@ $pkgs = DB::rows("SELECT p.*, d.name AS destination_name FROM packages p LEFT JO
             ['fas fa-file-alt','Custom Travel Policy','We implement your corporate travel policy across all bookings for compliance and cost control.'],
           ] as $benefit): ?>
           <div style="display:flex;gap:16px;align-items:start;padding:20px;background:#fff;border-radius:12px;border:1px solid var(--clr-border)">
-            <div style="width:44px;height:44px;background:rgba(13,59,102,.08);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--clr-primary);font-size:1rem">
+            <div style="width:44px;height:44px;background:rgba(12,38,20,.08);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--clr-primary);font-size:1rem">
               <i class="<?= $benefit[0] ?>"></i>
             </div>
             <div>

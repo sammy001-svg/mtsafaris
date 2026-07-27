@@ -15,7 +15,11 @@ $excluded  = jd($pkg['excluded']);
 $gallery   = jd($pkg['gallery']);
 $hotels    = jd($pkg['hotels']);
 $faqs      = jd($pkg['faqs']);
-$addons    = DB::rows("SELECT * FROM package_addons WHERE package_id = ? AND is_active = 1", [$pkg['id']]);
+// Addons: prefer JSON column (set in admin form), fall back to separate table
+$addons = jd($pkg['addons'] ?? '[]', []);
+if (empty($addons)) {
+    $addons = DB::rows("SELECT name, price, '' AS description FROM package_addons WHERE package_id=? AND is_active=1", [$pkg['id']]);
+}
 $reviews   = getPackageReviews($pkg['id'], 8);
 
 $related   = DB::rows("SELECT p.*, d.name AS destination_name, d.country
@@ -25,8 +29,8 @@ $related   = DB::rows("SELECT p.*, d.name AS destination_name, d.country
                         ORDER BY p.is_featured DESC LIMIT 3",
                        [$pkg['id'], $pkg['category_id'], $pkg['type']]);
 
-$pageTitle       = h($pkg['title']) . ' — MT Safaris';
-$pageDescription = excerpt($pkg['tagline'] ?: strip_tags($pkg['overview'] ?? ''), 160);
+$pageTitle       = h($pkg['meta_title'] ?: $pkg['title']) . ' — MT Safaris';
+$pageDescription = $pkg['meta_description'] ?: excerpt($pkg['tagline'] ?: strip_tags($pkg['overview'] ?? ''), 160);
 $pageImage       = $pkg['hero_image'];
 $ogType          = 'product';
 $headerClass     = 'solid';
@@ -44,7 +48,7 @@ require_once 'includes/header.php';
 <!-- Package Hero -->
 <div class="package-hero" id="pkgHero">
   <img src="<?= h($gallery[0] ?? $pkg['hero_image'] ?? 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1400&q=85') ?>"
-       alt="<?= h($pkg['title']) ?>" id="galleryMainImg" class="gallery-main-img">
+       alt="<?= h($pkg['title']) ?>" id="galleryMainImg" class="gallery-main-img" fetchpriority="high" decoding="async">
   <div class="package-hero-overlay"></div>
   <div class="container">
     <div class="package-hero-content">
@@ -69,7 +73,7 @@ require_once 'includes/header.php';
       <div class="gallery-thumbs" style="margin-top:20px">
         <?php foreach (array_slice($gallery, 0, 5) as $i => $img): ?>
         <div class="gallery-thumb <?= $i===0?'active':'' ?>" onclick="document.getElementById('galleryMainImg').src='<?= h($img) ?>';this.parentElement.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active')">
-          <img src="<?= h($img) ?>" alt="Gallery <?= $i+1 ?>">
+          <img src="<?= h($img) ?>" alt="Gallery <?= $i+1 ?>" loading="lazy" decoding="async">
         </div>
         <?php endforeach; ?>
         <?php if (count($gallery) > 5): ?>
@@ -84,12 +88,12 @@ require_once 'includes/header.php';
 <!-- Main Content -->
 <section class="section-sm">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:40px;align-items:start">
+    <div class="pkg-detail-layout">
 
       <!-- LEFT: Package Info -->
       <div>
         <!-- Quick Stats -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:36px">
+        <div class="pkg-quick-stats">
           <?php
           $qs = [
             ['fas fa-clock','Duration',$pkg['duration_days'].' Days / '.$pkg['duration_nights'].' Nights'],
@@ -390,7 +394,7 @@ require_once 'includes/header.php';
       <article class="package-card" data-animate>
         <div class="package-card-img">
           <a href="<?= url('package-detail.php?slug=' . h($r['slug'])) ?>">
-            <img src="<?= h($r['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>" alt="<?= h($r['title']) ?>" loading="lazy">
+            <img src="<?= h($r['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80') ?>" alt="<?= h($r['title']) ?>" loading="lazy" decoding="async">
           </a>
           <span class="package-badge"><?= ucfirst(h($r['type'])) ?></span>
         </div>

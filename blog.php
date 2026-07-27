@@ -2,6 +2,15 @@
 $pageTitle       = 'Travel Blog — Destination Guides, Safari Tips & Travel Stories';
 $pageDescription = 'Read MT Safaris travel blog for expert destination guides, safari tips, corporate travel insights, and inspiring travel stories from East Africa and beyond.';
 $headerClass     = 'solid';
+require_once 'includes/config.php';
+require_once 'includes/functions.php';
+$_blogSchema = DB::rows("SELECT title, slug FROM blog_posts WHERE status='published' AND published_at <= NOW() ORDER BY published_at DESC LIMIT 20");
+$jsonLd = schemaItemList($_blogSchema, url('blog.php'), 'MT Safaris Travel Blog', 'blog-detail.php?slug=')
+        . schemaBreadcrumb([
+            ['name' => 'Home', 'url' => url()],
+            ['name' => 'Blog', 'url' => url('blog.php')],
+          ]);
+unset($_blogSchema);
 require_once 'includes/header.php';
 
 $blogCategories = DB::rows("SELECT bc.*, COUNT(bp.id) AS post_count
@@ -63,7 +72,7 @@ $featured = DB::row("SELECT bp.*, bc.name AS category_name, CONCAT(u.first_name,
           <div style="display:grid;grid-template-columns:1fr 1fr">
             <div style="aspect-ratio:1;overflow:hidden">
               <img src="<?= h($featured['featured_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=700&q=85') ?>"
-                   alt="<?= h($featured['title']) ?>" style="width:100%;height:100%;object-fit:cover">
+                   alt="<?= h($featured['title']) ?>" style="width:100%;height:100%;object-fit:cover" decoding="async" fetchpriority="high">
             </div>
             <div style="padding:36px;display:flex;flex-direction:column;justify-content:center">
               <span style="background:var(--clr-gold);color:#fff;font-size:.68rem;font-weight:700;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:14px;text-transform:uppercase;letter-spacing:.08em">Featured</span>
@@ -104,7 +113,7 @@ $featured = DB::row("SELECT bp.*, bc.name AS category_name, CONCAT(u.first_name,
             <div class="blog-card-img">
               <a href="<?= url('blog-detail.php?slug=' . h($post['slug'])) ?>">
                 <img src="<?= h($post['featured_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&q=80') ?>"
-                     alt="<?= h($post['title']) ?>" loading="lazy">
+                     alt="<?= h($post['title']) ?>" loading="lazy" decoding="async">
               </a>
             </div>
             <div class="blog-card-body">
@@ -146,7 +155,7 @@ $featured = DB::row("SELECT bp.*, bc.name AS category_name, CONCAT(u.first_name,
               All Categories <span style="color:var(--clr-muted)"><?= $result['total'] ?></span>
             </a>
             <?php foreach ($blogCategories as $bc): ?>
-            <a href="?category=<?= $bc['id'] ?>" style="display:flex;justify-content:space-between;padding:10px 20px;font-size:.875rem;color:<?= $catId==$bc['id']?'var(--clr-primary)':'var(--clr-text)' ?>;background:<?= $catId==$bc['id']?'rgba(13,59,102,.06)':'' ?>;border-bottom:1px solid var(--clr-border);transition:background .2s;font-weight:<?= $catId==$bc['id']?'600':'400' ?>" onmouseover="this.style.background='var(--clr-light)'" onmouseout="this.style.background='<?= $catId==$bc['id']?'rgba(13,59,102,.06)':'' ?>'">
+            <a href="?category=<?= $bc['id'] ?>" style="display:flex;justify-content:space-between;padding:10px 20px;font-size:.875rem;color:<?= $catId==$bc['id']?'var(--clr-primary)':'var(--clr-text)' ?>;background:<?= $catId==$bc['id']?'rgba(12,38,20,.06)':'' ?>;border-bottom:1px solid var(--clr-border);transition:background .2s;font-weight:<?= $catId==$bc['id']?'600':'400' ?>" onmouseover="this.style.background='var(--clr-light)'" onmouseout="this.style.background='<?= $catId==$bc['id']?'rgba(12,38,20,.06)':'' ?>'">
               <?= h($bc['name']) ?> <span style="color:var(--clr-muted)"><?= $bc['post_count'] ?></span>
             </a>
             <?php endforeach; ?>
@@ -162,7 +171,7 @@ $featured = DB::row("SELECT bp.*, bc.name AS category_name, CONCAT(u.first_name,
             foreach ($popular as $p): ?>
             <a href="<?= url('blog-detail.php?slug='.h($p['slug'])) ?>" style="display:flex;gap:12px;margin-bottom:14px;text-decoration:none">
               <img src="<?= h($p['featured_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=100&q=70') ?>"
-                   style="width:60px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0" alt="">
+                   style="width:60px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0" alt="" loading="lazy" decoding="async">
               <div>
                 <p style="font-size:.8rem;font-weight:600;color:var(--clr-primary);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden"><?= h($p['title']) ?></p>
                 <span style="font-size:.72rem;color:var(--clr-muted)"><i class="far fa-eye"></i> <?= number_format($p['view_count']) ?></span>

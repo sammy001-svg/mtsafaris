@@ -80,7 +80,7 @@ $approved = DB::value("SELECT COUNT(*) FROM reviews WHERE is_approved=1");
 
     <!-- Stat tabs -->
     <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
-      <?php foreach ([''=>['All', $result['total']+0,'#f8f9fc','#0D3B66'],'pending'=>['Pending', $pending,'#fff7ed','#c05621'],'approved'=>['Approved', $approved,'#f0fff4','#276749']] as $k=>$v): ?>
+      <?php foreach ([''=>['All', $result['total']+0,'#f8f9fc','#0C2614'],'pending'=>['Pending', $pending,'#fff7ed','#c05621'],'approved'=>['Approved', $approved,'#f0fff4','#276749']] as $k=>$v): ?>
       <a href="?status=<?= $k ?><?= $search?"&search=$search":'' ?>" style="padding:14px 20px;border-radius:12px;background:<?= $status===$k?$v[2]:'#fff' ?>;color:<?= $status===$k?$v[3]:'var(--clr-muted)' ?>;border:2px solid <?= $status===$k?$v[2]:'var(--clr-border)' ?>;text-decoration:none;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:100px">
         <span style="font-size:1.4rem;font-weight:800"><?= $v[1] ?></span>
         <span style="font-size:.75rem"><?= $v[0] ?></span>

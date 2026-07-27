@@ -2,6 +2,13 @@
 $pageTitle       = 'About MT Safaris — Our Story, Mission & Team';
 $pageDescription = 'Learn about MT Safaris — East Africa\'s leading travel company. Our story, mission, vision, expert team, and 18+ years of crafting exceptional travel experiences.';
 $headerClass     = 'solid';
+require_once 'includes/config.php';
+require_once 'includes/functions.php';
+$jsonLd = schemaAboutPage()
+        . schemaBreadcrumb([
+            ['name' => 'Home',     'url' => url()],
+            ['name' => 'About Us', 'url' => url('about.php')],
+          ]);
 require_once 'includes/header.php';
 
 $team = [
@@ -44,13 +51,13 @@ $milestones = [
       <div style="position:relative" data-animate>
         <div class="about-img-grid">
           <div class="main-img">
-            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=85" alt="Masai Mara Safari">
+            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=85" alt="Masai Mara Safari" loading="lazy" decoding="async">
           </div>
           <div class="sub-img">
-            <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80" alt="Safari Guide">
+            <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80" alt="Safari Guide" loading="lazy" decoding="async">
           </div>
           <div class="sub-img">
-            <img src="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=400&q=80" alt="Mt Kilimanjaro">
+            <img src="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=400&q=80" alt="Mt Kilimanjaro" loading="lazy" decoding="async">
           </div>
         </div>
         <div class="about-badge" style="position:absolute;bottom:20px;right:-20px">
@@ -121,7 +128,7 @@ $milestones = [
       ];
       foreach ($values as $i => $v): ?>
       <div style="text-align:center;padding:36px 24px;border-radius:16px;border:1px solid var(--clr-border);background:#fff;transition:all .25s" data-animate data-delay="<?= $i*80 ?>">
-        <div style="width:68px;height:68px;background:linear-gradient(135deg,rgba(13,59,102,.1),rgba(59,175,218,.1));border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.6rem;color:var(--clr-primary)">
+        <div style="width:68px;height:68px;background:linear-gradient(135deg,rgba(12,38,20,.1),rgba(12,38,20,.05));border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.6rem;color:var(--clr-primary)">
           <i class="<?= $v[0] ?>"></i>
         </div>
         <h4 style="color:var(--clr-primary);margin-bottom:10px"><?= $v[1] ?></h4>

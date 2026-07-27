@@ -195,12 +195,12 @@
           datasets: [{
             label: 'Revenue (USD)',
             data,
-            borderColor: '#0D3B66',
-            backgroundColor: 'rgba(13,59,102,.1)',
+            borderColor: '#0C2614',
+            backgroundColor: 'rgba(12,38,20,.1)',
             borderWidth: 2,
             fill: true,
             tension: 0.4,
-            pointBackgroundColor: '#0D3B66',
+            pointBackgroundColor: '#0C2614',
             pointRadius: 4,
           }],
         },
@@ -230,7 +230,7 @@
           labels,
           datasets: [{
             data,
-            backgroundColor: ['#0D3B66','#D4A017','#3BAFDA','#38A169','#E53E3E'],
+            backgroundColor: ['#0C2614','#F6A229','#3BAFDA','#38A169','#E53E3E'],
             borderWidth: 2,
             borderColor: '#fff',
           }],
@@ -258,7 +258,7 @@
           datasets: [{
             label: 'Bookings',
             data,
-            backgroundColor: '#D4A017',
+            backgroundColor: '#F6A229',
             borderRadius: 6,
           }],
         },

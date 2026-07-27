@@ -67,7 +67,7 @@ $pageTitle    = 'Booking '.$booking['reference'].' | MT Safaris';
         <!-- Package Card -->
         <div class="card" style="margin-bottom:24px">
           <div class="card-body" style="display:flex;gap:16px">
-            <?php if ($booking['hero_image']): ?><img src="<?= h($booking['hero_image']) ?>" style="width:120px;height:88px;object-fit:cover;border-radius:var(--radius);flex-shrink:0" alt=""><?php endif; ?>
+            <?php if ($booking['hero_image']): ?><img src="<?= h($booking['hero_image']) ?>" style="width:120px;height:88px;object-fit:cover;border-radius:var(--radius);flex-shrink:0" alt="" loading="lazy" decoding="async"><?php endif; ?>
             <div>
               <h3 style="color:var(--clr-primary);margin-bottom:8px"><?= h($booking['package_title']??'Package') ?></h3>
               <div style="display:flex;gap:16px;flex-wrap:wrap">

@@ -39,8 +39,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_FILES['hero_image']['name'])) {
         $imgUrl = uploadImage($_FILES['hero_image'], 'destinations');
         if ($imgUrl) $data['hero_image'] = $imgUrl;
-        else $errors[] = 'Image upload failed.';
+        else $errors[] = 'Hero image upload failed.';
     }
+
+    // Gallery: keep existing, remove checked, add new uploads
+    $existingGallery = jd($dest['gallery'] ?? '[]', []);
+    $removals        = $_POST['gallery_remove'] ?? [];
+    $existingGallery = array_values(array_filter($existingGallery, fn($u) => !in_array($u, $removals)));
+    if (!empty($_FILES['gallery']['name'][0])) {
+        foreach ($_FILES['gallery']['name'] as $i => $fname) {
+            if (!$fname) continue;
+            $file = [
+                'name'     => $_FILES['gallery']['name'][$i],
+                'type'     => $_FILES['gallery']['type'][$i],
+                'tmp_name' => $_FILES['gallery']['tmp_name'][$i],
+                'error'    => $_FILES['gallery']['error'][$i],
+                'size'     => $_FILES['gallery']['size'][$i],
+            ];
+            $gUrl = uploadImage($file, 'destinations');
+            if ($gUrl) $existingGallery[] = $gUrl;
+        }
+    }
+    $data['gallery'] = json_encode($existingGallery);
 
     if (!$errors) {
         if ($id) {
@@ -60,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $dest       = $dest ?? [];
 $highlights = implode("\n", jd($dest['highlights'] ?? null, []));
+$gallery    = jd($dest['gallery'] ?? '[]', []);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -250,6 +271,36 @@ $highlights = implode("\n", jd($dest['highlights'] ?? null, []));
             </div>
           </div>
 
+          <!-- Gallery -->
+          <div class="admin-card">
+            <div class="admin-card-header" style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-weight:600;color:var(--clr-primary);display:flex;align-items:center;gap:8px">
+                <i class="fas fa-images" style="color:var(--clr-gold)"></i> Photo Gallery
+              </span>
+              <span class="form-hint" style="font-size:.8rem"><?= count($gallery) ?> image<?= count($gallery) !== 1 ? 's' : '' ?></span>
+            </div>
+            <div class="admin-card-body">
+              <?php if ($gallery): ?>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-bottom:14px">
+                <?php foreach ($gallery as $gUrl): ?>
+                <div class="gallery-thumb" style="position:relative;border-radius:var(--radius-sm);overflow:hidden;border:2px solid var(--clr-border)">
+                  <img src="<?= h($gUrl) ?>" alt=""
+                       style="width:100%;height:90px;object-fit:cover;display:block">
+                  <label style="position:absolute;top:4px;right:4px;width:22px;height:22px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:.65rem"
+                         title="Mark for removal" onclick="toggleRemove(this)">
+                    <input type="checkbox" name="gallery_remove[]" value="<?= h($gUrl) ?>" style="display:none">
+                    <i class="fas fa-times"></i>
+                  </label>
+                </div>
+                <?php endforeach; ?>
+              </div>
+              <p class="form-hint" style="margin-bottom:12px">Click <i class="fas fa-times"></i> on an image to mark it for removal. Changes apply on save.</p>
+              <?php endif; ?>
+              <input type="file" name="gallery[]" accept="image/*" multiple class="form-control">
+              <span class="form-hint">Select multiple images at once. Recommended: 1280×960 px JPG. Max 5 MB each.</span>
+            </div>
+          </div>
+
           <!-- SEO -->
           <div class="admin-card">
             <div class="admin-card-header">
@@ -400,6 +451,14 @@ function updateSeo() {
 document.getElementById('metaTitle')?.addEventListener('input', updateSeo);
 document.getElementById('metaDesc')?.addEventListener('input', updateSeo);
 updateSeo();
+
+function toggleRemove(label) {
+  const cb   = label.querySelector('input[type=checkbox]');
+  const wrap = label.closest('.gallery-thumb');
+  cb.checked = !cb.checked;
+  wrap.style.opacity = cb.checked ? '0.45' : '1';
+  wrap.style.borderColor = cb.checked ? '#E53E3E' : 'var(--clr-border)';
+}
 </script>
 </body>
 </html>

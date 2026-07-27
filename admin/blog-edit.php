@@ -1,6 +1,5 @@
 <?php
 require_once dirname(__DIR__) . '/includes/config.php';
-require_once dirname(__DIR__) . '/includes/db.php';
 require_once dirname(__DIR__) . '/includes/auth.php';
 require_once dirname(__DIR__) . '/includes/functions.php';
 requireAdmin();
@@ -138,19 +137,8 @@ $tags = implode(', ', jd($p['tags'] ?? '[]', []));
 
       <!-- Sticky save bar -->
       <div class="save-bar">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <div class="form-group" style="margin:0">
-            <select name="status" class="form-control" style="width:140px">
-              <option value="draft"     <?= ($p['status'] ?? 'draft') === 'draft'     ? 'selected' : '' ?>>Draft</option>
-              <option value="published" <?= ($p['status'] ?? '')      === 'published' ? 'selected' : '' ?>>Published</option>
-              <option value="archived"  <?= ($p['status'] ?? '')      === 'archived'  ? 'selected' : '' ?>>Archived</option>
-            </select>
-          </div>
-          <label class="admin-toggle" style="margin:0">
-            <input type="checkbox" name="is_featured" <?= ($p['is_featured'] ?? 0) ? 'checked' : '' ?>>
-            <span class="admin-toggle-slider"></span>
-            <span class="admin-toggle-label">Featured</span>
-          </label>
+        <div style="color:var(--clr-muted);font-size:.85rem">
+          <?= $isEdit ? 'Editing: <strong>' . h(excerpt($p['title'] ?? '', 55)) . '</strong>' : 'New Blog Post' ?>
         </div>
         <button type="submit" class="btn-admin btn-admin-primary">
           <i class="fas fa-save"></i> <?= $isEdit ? 'Update Post' : 'Publish Post' ?>
@@ -203,6 +191,7 @@ $tags = implode(', ', jd($p['tags'] ?? '[]', []));
                 <button type="button" onclick="fmt('insertOrderedList')"   title="Numbered list"><i class="fas fa-list-ol"></i></button>
                 <span class="toolbar-sep">|</span>
                 <button type="button" onclick="insertLink()" title="Insert link"><i class="fas fa-link"></i></button>
+                <button type="button" onclick="fmt('formatBlock','BLOCKQUOTE')" title="Blockquote"><i class="fas fa-quote-left"></i></button>
                 <button type="button" onclick="fmt('insertHorizontalRule')" title="Divider"><i class="fas fa-minus"></i></button>
                 <span class="toolbar-sep">|</span>
                 <button type="button" onclick="fmt('removeFormat')" title="Clear formatting"><i class="fas fa-eraser"></i></button>
@@ -352,13 +341,17 @@ function previewImage(input) {
   }
 }
 
-// Slug auto-gen
-document.getElementById('blog_title').addEventListener('input', function() {
-  const slugEl = document.getElementById('blog_slug');
-  if (!<?= $isEdit ? 'true' : 'false' ?> || !slugEl.value) {
-    slugEl.value = this.value.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-');
-  }
+// Slug auto-gen (only for new posts unless user hasn't typed one yet)
+const blogTitleEl = document.getElementById('blog_title');
+const blogSlugEl  = document.getElementById('blog_slug');
+<?php if (!$isEdit): ?>
+blogTitleEl?.addEventListener('input', function() {
+  if (!blogSlugEl.dataset.manual)
+    blogSlugEl.value = this.value.toLowerCase().trim()
+      .replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-|-$/g, '');
 });
+blogSlugEl?.addEventListener('input', function() { this.dataset.manual = '1'; });
+<?php endif; ?>
 
 // Sync editor → hidden field before submit
 document.getElementById('blogForm').addEventListener('submit', function() {

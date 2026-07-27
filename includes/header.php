@@ -19,7 +19,10 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <?= seoMeta($pageTitle ?? '', $pageDescription ?? '', $pageImage ?? '', $ogType ?? 'website') ?>
   <meta name="csrf-token" content="<?= csrfToken() ?>">
-  <meta name="theme-color" content="#0D3B66">
+  <meta name="theme-color" content="#0C2614">
+  <?php if (!empty(GOOGLE_SEARCH_CONSOLE)): ?>
+  <meta name="google-site-verification" content="<?= h(GOOGLE_SEARCH_CONSOLE) ?>">
+  <?php endif; ?>
   <link rel="icon" href="<?= url('assets/images/favicon.ico') ?>" type="image/x-icon">
   <!-- Resource hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,8 +31,10 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
   <link rel="dns-prefetch" href="https://images.unsplash.com">
   <!-- Critical CSS preload -->
   <link rel="preload" href="<?= url('assets/css/style.css') ?>?v=<?= $cssV ?>" as="style">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <!-- Font Awesome — async load to avoid render-blocking -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" crossorigin="anonymous"
+        onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"></noscript>
   <!-- Main Styles -->
   <link rel="stylesheet" href="<?= url('assets/css/style.css') ?>?v=<?= $cssV ?>">
   <?php if (isset($extraCss)): foreach ($extraCss as $css): ?>
@@ -54,11 +59,7 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
 
       <!-- Logo -->
       <a href="<?= url() ?>" class="logo">
-        <div class="logo-icon"><i class="fas fa-globe-africa"></i></div>
-        <div class="logo-text">
-          MT Safaris
-          <span class="logo-sub">Premium Travel</span>
-        </div>
+        <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" class="site-logo-img">
       </a>
 
       <!-- Main Nav -->
@@ -134,7 +135,7 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
 </header>
 
 <!-- Search Overlay -->
-<div id="searchOverlay" style="display:none;position:fixed;inset:0;background:rgba(13,59,102,.96);z-index:2000;align-items:flex-start;justify-content:center;padding-top:120px">
+<div id="searchOverlay" style="display:none;position:fixed;inset:0;background:rgba(12,38,20,.96);z-index:2000;align-items:flex-start;justify-content:center;padding-top:120px">
   <div style="width:100%;max-width:700px;padding:0 24px">
     <form action="<?= url('search.php') ?>" method="GET" id="overlaySearchForm" style="position:relative">
       <i class="fas fa-search" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:1.1rem;pointer-events:none"></i>
@@ -161,17 +162,16 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
   <button class="close-btn"><i class="fas fa-times"></i></button>
   <div style="margin-bottom:24px">
     <div class="logo">
-      <div class="logo-icon"><i class="fas fa-globe-africa"></i></div>
-      <div class="logo-text">MT Safaris <span class="logo-sub">Premium Travel</span></div>
+      <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" class="site-logo-img">
     </div>
   </div>
-  <a href="<?= url() ?>">Home</a>
-  <a href="<?= url('packages.php') ?>">Tour Packages</a>
-  <a href="<?= url('destinations.php') ?>">Destinations</a>
-  <a href="<?= url('corporate.php') ?>">Corporate Travel</a>
-  <a href="<?= url('blog.php') ?>">Blog</a>
-  <a href="<?= url('about.php') ?>">About Us</a>
-  <a href="<?= url('contact.php') ?>">Contact</a>
+  <a href="<?= url() ?>"               class="<?= isActive('index.php') ?>">Home</a>
+  <a href="<?= url('packages.php') ?>"   class="<?= isActive('packages.php') ?>">Tour Packages</a>
+  <a href="<?= url('destinations.php') ?>" class="<?= isActive('destinations.php') ?>">Destinations</a>
+  <a href="<?= url('corporate.php') ?>"  class="<?= isActive('corporate.php') ?>">Corporate Travel</a>
+  <a href="<?= url('blog.php') ?>"       class="<?= isActive('blog.php') ?>">Blog</a>
+  <a href="<?= url('about.php') ?>"      class="<?= isActive('about.php') ?>">About Us</a>
+  <a href="<?= url('contact.php') ?>"    class="<?= isActive('contact.php') ?>">Contact</a>
   <div style="margin-top:24px;display:flex;gap:10px;flex-direction:column">
     <?php if ($user): ?>
     <a href="<?= url('portal/') ?>" class="btn btn-outline-white">My Dashboard</a>

@@ -83,9 +83,8 @@ if ($step === 'reset' && $token) {
 <body>
 <div class="auth-card">
   <div style="text-align:center;margin-bottom:32px">
-    <a href="<?= url() ?>" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:24px">
-      <i class="fas fa-globe-africa" style="font-size:2rem;color:var(--clr-gold)"></i>
-      <span style="font-family:var(--ff-head);font-weight:700;font-size:1.25rem;color:var(--clr-primary)">MT Safaris</span>
+    <a href="<?= url() ?>" style="display:inline-flex;justify-content:center;text-decoration:none;margin-bottom:24px">
+      <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:68px;width:auto">
     </a>
     <h2 style="color:var(--clr-primary);margin-bottom:8px"><?= $step==='reset'?'Set New Password':'Forgot Password?' ?></h2>
     <p style="color:var(--clr-muted);font-size:.875rem"><?= $step==='reset'?'Enter your new password below.':'Enter your email to receive a password reset link.' ?></p>

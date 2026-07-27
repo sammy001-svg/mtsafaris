@@ -83,7 +83,7 @@ $topPackages = DB::rows("SELECT p.title, COUNT(b.id) AS bookings, COALESCE(SUM(b
           <?php endif; ?>
           <?php if ($stats['new_inquiries']): ?>
           <a href="<?= url('admin/inquiries.php') ?>" class="notif-item unread" style="text-decoration:none;display:flex">
-            <div class="notif-icon" style="background:rgba(13,59,102,.12)"><i class="fas fa-envelope" style="color:var(--clr-primary)"></i></div>
+            <div class="notif-icon" style="background:rgba(12,38,20,.12)"><i class="fas fa-envelope" style="color:var(--clr-primary)"></i></div>
             <div><p class="notif-text"><?= $stats['new_inquiries'] ?> new inquiry<?= $stats['new_inquiries']>1?'ies':'' ?></p><p class="notif-time">Just now</p></div>
           </a>
           <?php endif; ?>
@@ -232,7 +232,7 @@ $topPackages = DB::rows("SELECT p.title, COUNT(b.id) AS bookings, COALESCE(SUM(b
         <div class="admin-card-body" style="padding:0">
           <?php foreach ($recentInquiries as $inq): ?>
           <a href="<?= url('admin/inquiry-view.php?id='.$inq['id']) ?>" style="display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--clr-border);text-decoration:none" onmouseover="this.style.background='var(--clr-light)'" onmouseout="this.style.background=''">
-            <div style="width:36px;height:36px;border-radius:50%;background:rgba(13,59,102,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:.8rem;color:var(--clr-primary)"><?= strtoupper(substr($inq['name'],0,1)) ?></div>
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(12,38,20,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:.8rem;color:var(--clr-primary)"><?= strtoupper(substr($inq['name'],0,1)) ?></div>
             <div style="flex:1;min-width:0">
               <p style="font-size:.8rem;font-weight:600;color:var(--clr-primary)"><?= h($inq['name']) ?></p>
               <p style="font-size:.72rem;color:var(--clr-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= h(excerpt($inq['message'],60)) ?></p>
@@ -256,7 +256,7 @@ $topPackages = DB::rows("SELECT p.title, COUNT(b.id) AS bookings, COALESCE(SUM(b
               [url('admin/settings.php'),'fas fa-cog','Settings','gold'],
             ] as $action): ?>
             <a href="<?= $action[0] ?>" style="display:flex;align-items:center;gap:8px;padding:12px;background:var(--clr-light);border-radius:8px;border:1px solid var(--clr-border);text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='var(--clr-primary)'" onmouseout="this.style.borderColor='var(--clr-border)'">
-              <div style="width:32px;height:32px;border-radius:6px;background:rgba(13,59,102,.1);display:flex;align-items:center;justify-content:center;color:var(--clr-primary);font-size:.85rem;flex-shrink:0"><i class="<?= $action[1] ?>"></i></div>
+              <div style="width:32px;height:32px;border-radius:6px;background:rgba(12,38,20,.1);display:flex;align-items:center;justify-content:center;color:var(--clr-primary);font-size:.85rem;flex-shrink:0"><i class="<?= $action[1] ?>"></i></div>
               <span style="font-size:.8rem;font-weight:600;color:var(--clr-primary)"><?= $action[2] ?></span>
             </a>
             <?php endforeach; ?>

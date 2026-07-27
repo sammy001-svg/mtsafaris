@@ -111,7 +111,7 @@ function bkStatusBadge(string $s): string {
           ?>
           <div class="booking-row">
             <img src="<?= h($b['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=100&q=70') ?>"
-                 style="width:56px;height:44px;object-fit:cover;border-radius:8px" alt="">
+                 style="width:56px;height:44px;object-fit:cover;border-radius:8px" alt="" loading="lazy" decoding="async">
             <div>
               <div style="font-weight:600;font-size:.85rem;color:var(--clr-primary);margin-bottom:3px"><?= h($b['package_title']) ?></div>
               <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -150,7 +150,7 @@ function bkStatusBadge(string $s): string {
         <div class="card" style="margin-bottom:20px;overflow:hidden">
           <div style="position:relative;height:100px;overflow:hidden">
             <img src="<?= h($next['hero_image']?:'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400&q=70') ?>"
-                 style="width:100%;height:100%;object-fit:cover" alt="">
+                 style="width:100%;height:100%;object-fit:cover" alt="" loading="lazy" decoding="async">
             <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent,rgba(15,23,42,.7))"></div>
             <div style="position:absolute;bottom:12px;left:14px;right:14px">
               <div style="color:#fff;font-weight:700;font-size:.85rem"><?= h($next['package_title']) ?></div>
