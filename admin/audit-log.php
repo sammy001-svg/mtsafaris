@@ -35,29 +35,42 @@ $pageTitle = 'Audit Log | MT Safaris Admin';
   <link rel="stylesheet" href="<?= url('assets/css/admin.css') ?>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="admin-body">
+<body>
 <?php include __DIR__ . '/includes/sidebar.php'; ?>
-<div class="admin-wrapper">
+<div class="admin-main">
 <header class="admin-header">
-  <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-  <div class="admin-header-title">Audit Log</div>
+  <div class="admin-header-left">
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+    <div class="breadcrumb-admin">
+      <a href="<?= url('admin/') ?>">Admin</a>
+      <i class="fas fa-chevron-right"></i>
+      <span>Audit Log</span>
+    </div>
+  </div>
 </header>
-<main class="admin-main">
+<div class="admin-content">
+
+<div class="page-header">
+  <div class="page-header-info">
+    <h1 class="page-title">Audit Log</h1>
+    <p class="page-subtitle">A record of changes made in the admin panel.</p>
+  </div>
+</div>
 
 <div class="admin-card" style="margin-bottom:20px">
   <div class="admin-card-body">
     <form method="GET" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
-      <div style="flex:1;min-width:200px"><label class="admin-label">Search</label><input type="text" name="s" class="admin-input" value="<?= h($search) ?>" placeholder="Search action, model, user..."></div>
-      <div><label class="admin-label">Action</label>
-        <select name="action" class="admin-select">
+      <div style="flex:1;min-width:200px"><label class="form-label">Search</label><input type="text" name="s" class="form-control" value="<?= h($search) ?>" placeholder="Search action, model, user..."></div>
+      <div><label class="form-label">Action</label>
+        <select name="action" class="form-control">
           <option value="">All Actions</option>
           <?php foreach (['create','update','delete','update_status','toggle_status','login','logout'] as $a): ?>
           <option value="<?= $a ?>" <?= $action===$a?'selected':'' ?>><?= ucfirst(str_replace('_',' ',$a)) ?></option>
           <?php endforeach; ?>
         </select>
       </div>
-      <div><label class="admin-label">Model</label>
-        <select name="model" class="admin-select">
+      <div><label class="form-label">Model</label>
+        <select name="model" class="form-control">
           <option value="">All Models</option>
           <?php foreach (['packages','bookings','users','blog_posts','inquiries','settings','coupons'] as $m): ?>
           <option value="<?= $m ?>" <?= $model===$m?'selected':'' ?>><?= ucfirst(str_replace('_',' ',$m)) ?></option>
@@ -130,7 +143,7 @@ $pageTitle = 'Audit Log | MT Safaris Admin';
     </div>
   </div>
 </div>
-</main>
+</div>
 </div>
 <script src="<?= url('assets/js/admin.js') ?>"></script>
 <script>

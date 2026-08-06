@@ -40,14 +40,33 @@ $pageTitle = 'Inquiries | MT Safaris Admin';
   <link rel="stylesheet" href="<?= url('assets/css/admin.css') ?>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="admin-body">
+<body>
 <?php include __DIR__ . '/includes/sidebar.php'; ?>
-<div class="admin-wrapper">
+<div class="admin-main">
 <header class="admin-header">
-  <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-  <div class="admin-header-title">Inquiries <?php if ($newCount): ?><span class="badge" style="background:#ef4444;color:#fff;margin-left:8px"><?= $newCount ?> new</span><?php endif; ?></div>
+  <div class="admin-header-left">
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+    <div class="breadcrumb-admin">
+      <a href="<?= url('admin/') ?>">Admin</a>
+      <i class="fas fa-chevron-right"></i>
+      <span>Inquiries</span>
+    </div>
+  </div>
+  <?php if ($newCount): ?>
+  <div class="admin-header-right">
+    <span class="status-badge sb-pending"><?= $newCount ?> new</span>
+  </div>
+  <?php endif; ?>
 </header>
-<main class="admin-main">
+<div class="admin-content">
+
+<div class="page-header">
+  <div class="page-header-info">
+    <h1 class="page-title">Inquiries</h1>
+    <p class="page-subtitle">Customer enquiries submitted through the website.</p>
+  </div>
+</div>
+
 <?php echo renderFlash(); ?>
 
 <!-- Status Tabs -->
@@ -62,7 +81,7 @@ $pageTitle = 'Inquiries | MT Safaris Admin';
   <div class="admin-card-body">
     <form method="GET" style="display:flex;gap:12px">
       <input type="hidden" name="status" value="<?= h($status) ?>">
-      <input type="text" name="s" class="admin-input" value="<?= h($search) ?>" placeholder="Search by name, email, message..." style="flex:1">
+      <input type="text" name="s" class="form-control" value="<?= h($search) ?>" placeholder="Search by name, email, message..." style="flex:1">
       <button type="submit" class="btn btn-admin-primary btn-sm">Search</button>
       <?php if ($search): ?><a href="?status=<?= h($status) ?>" class="btn btn-admin-outline btn-sm">Clear</a><?php endif; ?>
     </form>
@@ -117,7 +136,7 @@ $pageTitle = 'Inquiries | MT Safaris Admin';
     <?php endif; ?>
   </div>
 </div>
-</main>
+</div>
 </div>
 <script src="<?= url('assets/js/admin.js') ?>"></script>
 </body>

@@ -16,7 +16,15 @@
       "Bash(gh repo *)",
       "Bash(grep -n 'post\\\\['\\\\''body'\\\\''\\\\]\\\\|post\\\\['\\\\''content'\\\\''\\\\]\\\\|$post\\\\[' blog-detail.php)",
       "Bash(php -r \"var_dump\\(class_exists\\('DOMDocument'\\), function_exists\\('mb_convert_encoding'\\)\\);\")",
-      "Bash(xargs -I{} basename {})"
+      "Bash(xargs -I{} basename {})",
+      "Bash(git commit --no-edit -m '@ *)",
+      "Bash(git commit *)",
+      "Bash(curl -sL \"https://mtsafaris.com/package-detail.php?slug=masai-mara-classic-safari\" -o \"C:/PROGRA~1/KMSpico/temp/claude/c--Mtsafaries-mtsafaris/a50462b5-3ab6-40a9-a4c1-084168683cf1/scratchpad/prod.html\" -w \"HTTP %{http_code}  bytes=%{size_download}\\\\n\")",
+      "Bash(grep -o 'data-panel=\"overview\"[^>]*>.\\\\{0,400\\\\}' prod.html)",
+      "Bash(awk '/data-panel=\"overview\"/{f=1} f{print; n++} n>6{exit}' prod.html)",
+      "Bash(git fetch *)",
+      "Bash(git rev-list *)",
+      "Bash(git ls-remote *)"
     ]
   }
 }

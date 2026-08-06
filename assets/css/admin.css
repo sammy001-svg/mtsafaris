@@ -29,6 +29,17 @@
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-full: 9999px;
+
+  /* Aliases: several admin pages reference --admin-* names inline.
+     Without these the values resolve to nothing and the element
+     silently falls back to inherited colours. */
+  --admin-primary: var(--clr-primary);
+  --admin-text:    var(--clr-text);
+  --admin-muted:   var(--clr-muted);
+  --admin-border:  var(--clr-border);
+  --admin-light:   var(--clr-light);
+  --admin-danger:  var(--clr-danger);
+  --admin-success: var(--clr-success);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -692,9 +703,152 @@ select.form-control { background-image: url("data:image/svg+xml,%3Csvg xmlns='ht
 
 /* ---- SEO preview bar ---- */
 .seo-preview { background: var(--clr-light); border-radius: var(--radius-sm); padding: 12px 14px; margin-top: 12px; border-left: 3px solid var(--clr-sky); }
-.seo-preview .seo-title { color: #1a0dab; font-size: .9rem; font-weight: 500; }
-.seo-preview .seo-url { color: var(--clr-success); font-size: .75rem; margin: 2px 0; }
-.seo-preview .seo-desc { color: var(--clr-muted); font-size: .78rem; line-height: 1.5; }
+.seo-preview .seo-title,
+.seo-preview .seo-preview-title { color: #1a0dab; font-size: .9rem; font-weight: 500; }
+.seo-preview .seo-url,
+.seo-preview .seo-preview-url { color: var(--clr-success); font-size: .75rem; margin: 2px 0; }
+.seo-preview .seo-desc,
+.seo-preview .seo-preview-desc { color: var(--clr-muted); font-size: .78rem; line-height: 1.5; }
+
+/* =============================================================
+   FLASH / ALERT MESSAGES
+   Emitted by renderFlash() as .flash-msg.flash-{success|error|
+   warning|info}; several pages hardcode .flash-danger, so both
+   spellings are supported.
+   ============================================================= */
+.flash-msg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  border-left-width: 3px;
+  font-size: .84rem;
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.flash-msg > i:first-child { font-size: 1rem; flex-shrink: 0; }
+.flash-msg > span { flex: 1; }
+.flash-msg > button {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: .55;
+  cursor: pointer;
+  font-size: .8rem;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: opacity var(--transition);
+  flex-shrink: 0;
+}
+.flash-msg > button:hover { opacity: 1; }
+
+.flash-success              { background: #F0FFF4; border-color: #9AE6B4; color: #22543D; }
+.flash-error, .flash-danger { background: #FFF5F5; border-color: #FEB2B2; color: #822727; }
+.flash-warning              { background: #FFFBEB; border-color: #FBD38D; color: #744210; }
+.flash-info                 { background: #EBF8FF; border-color: #90CDF4; color: #2A4365; }
+
+/* =============================================================
+   ICON BUTTONS
+   Compact square actions used in table rows and list headers.
+   ============================================================= */
+.btn-icon-admin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--clr-border);
+  background: #fff;
+  color: var(--clr-muted);
+  font-size: .78rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.btn-icon-admin:hover { border-color: var(--clr-primary); color: var(--clr-primary); background: #eef4f0; }
+.btn-icon-danger:hover { border-color: var(--clr-danger); color: var(--clr-danger); background: #FFF5F5; }
+
+.btn-xs { padding: 4px 10px; font-size: .7rem; border-radius: var(--radius-sm); }
+
+/* =============================================================
+   SETTINGS PANELS
+   Tab bodies toggled by inline display; these rules only supply
+   spacing so switching tabs doesn't shift the layout.
+   ============================================================= */
+.settings-panels { min-height: 260px; }
+.settings-panel { animation: adminFadeIn .18s ease; }
+@keyframes adminFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* =============================================================
+   MISC HELPERS
+   ============================================================= */
+.text-danger  { color: var(--clr-danger); }
+.text-success { color: var(--clr-success); }
+.text-muted   { color: var(--clr-muted); }
+.row-select   { width: 15px; height: 15px; cursor: pointer; accent-color: var(--clr-primary); }
+
+/* =============================================================
+   NAMING ALIASES
+   The admin grew two vocabularies for the same components. These
+   map the second spelling onto the primary design system so every
+   page renders identically. Admin pages load only admin.css, so
+   .btn/.btn-sm from the public stylesheet are not available here
+   and must be defined.
+   ============================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--ff-body);
+  font-size: .82rem;
+  font-weight: 600;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn-sm { padding: 6px 12px; font-size: .75rem; }
+
+/* Table row actions — alias of .tbl-actions / .btn-tbl */
+.table-actions { display: flex; gap: 5px; align-items: center; }
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--clr-border);
+  background: #fff;
+  color: var(--clr-muted);
+  font-size: .78rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.action-btn:hover        { border-color: var(--clr-primary); color: var(--clr-primary); background: #eef4f0; }
+.action-btn.view:hover   { border-color: var(--clr-sky);     color: var(--clr-sky);     background: #EBF8FF; }
+.action-btn.edit:hover   { border-color: var(--clr-primary); color: var(--clr-primary); background: #eef4f0; }
+.action-btn.delete:hover { border-color: var(--clr-danger);  color: var(--clr-danger);  background: #FFF5F5; }
+
+/* Page-header aliases — some pages use the flat -title/-sub names. */
+.page-header-title {
+  font-family: var(--ff-head);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--clr-primary);
+  line-height: 1.2;
+}
+.page-header-sub { font-size: .82rem; color: var(--clr-muted); margin-top: 4px; }
 
 /* ---- Responsive ---- */
 @media (max-width: 1024px) {

@@ -37,17 +37,33 @@ $pageTitle = 'Inquiry from '.h($inq['name']).' | Admin';
   <link rel="stylesheet" href="<?= url('assets/css/admin.css') ?>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="admin-body">
+<body>
 <?php include __DIR__ . '/includes/sidebar.php'; ?>
-<div class="admin-wrapper">
+<div class="admin-main">
 <header class="admin-header">
-  <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-  <div class="admin-header-title">Inquiry from <?= h($inq['name']) ?></div>
-  <div class="admin-header-actions">
-    <a href="<?= url('admin/inquiries.php') ?>" class="btn btn-admin-outline btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+  <div class="admin-header-left">
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+    <div class="breadcrumb-admin">
+      <a href="<?= url('admin/') ?>">Admin</a>
+      <i class="fas fa-chevron-right"></i>
+      <a href="<?= url('admin/inquiries.php') ?>">Inquiries</a>
+      <i class="fas fa-chevron-right"></i>
+      <span><?= h($inq['name']) ?></span>
+    </div>
+  </div>
+  <div class="admin-header-right">
+    <a href="<?= url('admin/inquiries.php') ?>" class="btn-admin btn-admin-outline btn-admin-sm"><i class="fas fa-arrow-left"></i> Back</a>
   </div>
 </header>
-<main class="admin-main">
+<div class="admin-content">
+
+<div class="page-header">
+  <div class="page-header-info">
+    <h1 class="page-title">Inquiry from <?= h($inq['name']) ?></h1>
+    <p class="page-subtitle">Received <?= formatDate($inq['created_at'], 'F j, Y \a\t g:ia') ?></p>
+  </div>
+</div>
+
 <?php echo renderFlash(); ?>
 
 <div style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start">
@@ -98,16 +114,16 @@ $pageTitle = 'Inquiry from '.h($inq['name']).' | Admin';
       <div class="admin-card-body">
         <form method="POST">
           <?= csrfField() ?>
-          <div class="admin-form-group">
-            <select name="status" class="admin-select">
+          <div class="form-group">
+            <select name="status" class="form-control">
               <?php foreach (['read','replied','closed'] as $s): ?>
               <option value="<?= $s ?>" <?= $inq['status']===$s?'selected':'' ?>><?= ucfirst($s) ?></option>
               <?php endforeach; ?>
             </select>
           </div>
-          <div class="admin-form-group">
-            <label class="admin-label">Internal Notes</label>
-            <textarea name="admin_notes" class="admin-input" rows="4" placeholder="Notes for your team..."><?= h($inq['admin_notes']??'') ?></textarea>
+          <div class="form-group">
+            <label class="form-label">Internal Notes</label>
+            <textarea name="admin_notes" class="form-control" rows="4" placeholder="Notes for your team..."><?= h($inq['admin_notes']??'') ?></textarea>
           </div>
           <button type="submit" name="update_status" class="btn btn-admin-primary btn-block"><i class="fas fa-save"></i> Save</button>
         </form>
@@ -115,7 +131,7 @@ $pageTitle = 'Inquiry from '.h($inq['name']).' | Admin';
     </div>
   </div>
 </div>
-</main>
+</div>
 </div>
 <script src="<?= url('assets/js/admin.js') ?>"></script>
 </body>

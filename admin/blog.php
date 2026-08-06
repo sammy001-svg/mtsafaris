@@ -62,7 +62,7 @@ $qs         = http_build_query(array_filter(['s' => $search, 'status' => $status
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="<?= url('assets/css/admin.css') ?>">
 </head>
-<body class="admin-body">
+<body>
 <?php require_once 'includes/sidebar.php'; ?>
 <div class="admin-main">
   <header class="admin-header">
