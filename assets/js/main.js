@@ -938,4 +938,31 @@
     searchDropdown.innerHTML = html;
   }
 
+  // ---- Portal sidebar (mobile) ----
+  // Below 992px the portal sidebar is translated off-canvas; without this
+  // there is no way to reach the navigation on a phone.
+  const portalToggle   = document.getElementById('portalNavToggle');
+  const portalSidebar  = document.getElementById('portalSidebar');
+  const portalBackdrop = document.getElementById('portalSidebarBackdrop');
+
+  if (portalToggle && portalSidebar) {
+    const setPortalNav = open => {
+      portalSidebar.classList.toggle('open', open);
+      if (portalBackdrop) portalBackdrop.classList.toggle('open', open);
+      portalToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+
+    portalToggle.addEventListener('click', e => {
+      e.stopPropagation();
+      setPortalNav(!portalSidebar.classList.contains('open'));
+    });
+    if (portalBackdrop) portalBackdrop.addEventListener('click', () => setPortalNav(false));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setPortalNav(false); });
+    // Following a nav link should close the drawer behind it.
+    portalSidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setPortalNav(false)));
+    // Returning to desktop width must not leave the drawer state stuck on.
+    window.addEventListener('resize', () => { if (window.innerWidth > 992) setPortalNav(false); });
+  }
+
 })();

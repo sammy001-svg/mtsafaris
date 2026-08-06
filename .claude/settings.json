@@ -24,7 +24,8 @@
       "Bash(awk '/data-panel=\"overview\"/{f=1} f{print; n++} n>6{exit}' prod.html)",
       "Bash(git fetch *)",
       "Bash(git rev-list *)",
-      "Bash(git ls-remote *)"
+      "Bash(git ls-remote *)",
+      "Bash(xargs -n1 basename)"
     ]
   }
 }

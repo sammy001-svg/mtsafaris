@@ -5,7 +5,14 @@ $unread = (int)DB::value("SELECT COUNT(*) FROM notifications WHERE user_id=? AND
 $currentPath = basename($_SERVER['PHP_SELF']);
 function portalActive($file) { global $currentPath; return $currentPath === $file ? 'active' : ''; }
 ?>
-<aside class="portal-sidebar">
+<!-- Mobile nav toggle: below 992px the sidebar slides off-canvas, so it
+     needs a control to bring it back. Hidden on desktop via CSS. -->
+<button class="portal-nav-toggle" id="portalNavToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="portalSidebar">
+  <i class="fas fa-bars"></i>
+</button>
+<div class="portal-sidebar-backdrop" id="portalSidebarBackdrop"></div>
+
+<aside class="portal-sidebar" id="portalSidebar">
   <div class="portal-sidebar-brand">
     <a href="<?= url() ?>" style="display:flex;align-items:center;text-decoration:none">
       <img src="<?= url('assets/images/logo.png') ?>" alt="Mountain Top Safaris Adventures" style="height:52px;width:auto">

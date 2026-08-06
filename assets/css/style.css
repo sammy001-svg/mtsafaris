@@ -1116,7 +1116,12 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--ff-head); line-height: 1.25; font-weight:
 /* ============================================================
    PORTAL / CUSTOMER DASHBOARD
    ============================================================ */
-.portal-layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+/* The sidebar is position:fixed, so it is out of normal flow and the main
+   column is offset with margin-left instead. Do NOT also make this a grid
+   with a 260px first track — the fixed sidebar leaves that track empty,
+   .portal-main lands in it, and its own margin-left collapses the content
+   to zero width. */
+.portal-layout { min-height: 100vh; }
 .portal-sidebar {
   background: var(--clr-primary);
   padding: 32px 20px;
@@ -1159,6 +1164,34 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--ff-head); line-height: 1.25; font-weight:
 .portal-empty { text-align: center; padding: 60px 24px; background: #fff; border-radius: var(--radius-lg); border: 2px dashed var(--clr-border); }
 .portal-empty h3 { color: var(--clr-primary); margin-bottom: 8px; }
 .portal-empty p { color: var(--clr-muted); }
+
+/* Mobile nav toggle + backdrop — both hidden on desktop, shown by the
+   max-width:992px block where the sidebar goes off-canvas. */
+.portal-nav-toggle {
+  display: none;
+  position: fixed;
+  top: 16px; left: 16px;
+  z-index: 210;
+  width: 42px; height: 42px;
+  align-items: center; justify-content: center;
+  background: var(--clr-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,.18);
+}
+.portal-sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 190;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.portal-sidebar-backdrop.open { opacity: 1; }
 
 .stat-box {
   background: #fff;
@@ -1556,7 +1589,9 @@ img[data-src] {
   .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .portal-sidebar { transform: translateX(-100%); transition: transform var(--transition-slow); z-index: 200; }
   .portal-sidebar.open { transform: translateX(0); }
-  .portal-main { margin-left: 0; }
+  .portal-main { margin-left: 0; padding-top: 72px; }
+  .portal-nav-toggle { display: flex; }
+  .portal-sidebar-backdrop.open { display: block; }
   .hero-stats { gap: 2rem; }
 }
 @media (max-width: 768px) {
