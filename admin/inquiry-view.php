@@ -22,7 +22,7 @@ if ($inq['status'] === 'new') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     verifyCsrf();
     $s = in_array($_POST['status'], ['new','read','replied','closed']) ? $_POST['status'] : 'read';
-    DB::update('inquiries', ['status'=>$s,'admin_notes'=>$_POST['admin_notes']??''], ['id'=>$id]);
+    DB::update('inquiries', ['status'=>$s,'notes'=>$_POST['admin_notes']??''], ['id'=>$id]);
     flash('success', 'Inquiry updated.');
     redirect(url('admin/inquiry-view.php?id='.$id));
 }
@@ -123,7 +123,7 @@ $pageTitle = 'Inquiry from '.h($inq['name']).' | Admin';
           </div>
           <div class="form-group">
             <label class="form-label">Internal Notes</label>
-            <textarea name="admin_notes" class="form-control" rows="4" placeholder="Notes for your team..."><?= h($inq['admin_notes']??'') ?></textarea>
+            <textarea name="admin_notes" class="form-control" rows="4" placeholder="Notes for your team..."><?= h($inq['notes']??'') ?></textarea>
           </div>
           <button type="submit" name="update_status" class="btn btn-admin-primary btn-block"><i class="fas fa-save"></i> Save</button>
         </form>

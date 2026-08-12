@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `testimonials`;
 DROP TABLE IF EXISTS `inquiries`;
 DROP TABLE IF EXISTS `notifications`;
 DROP TABLE IF EXISTS `wishlists`;
+DROP TABLE IF EXISTS `blog_comments`;
 DROP TABLE IF EXISTS `blog_posts`;
 DROP TABLE IF EXISTS `blog_categories`;
 DROP TABLE IF EXISTS `reviews`;
@@ -371,6 +372,21 @@ CREATE TABLE `blog_posts` (
   FOREIGN KEY (`category_id`) REFERENCES `blog_categories`(`id`) ON DELETE SET NULL,
   FOREIGN KEY (`author_id`)   REFERENCES `users`(`id`)           ON DELETE SET NULL,
   FULLTEXT `ft_blog` (`title`, `excerpt`, `body`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `blog_comments` (
+  `id`         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `post_id`    INT UNSIGNED NOT NULL,
+  `user_id`    INT UNSIGNED,
+  `name`       VARCHAR(150) NOT NULL,
+  `email`      VARCHAR(190) NOT NULL,
+  `body`       TEXT NOT NULL,
+  `status`     ENUM('pending','approved','spam') NOT NULL DEFAULT 'pending',
+  `ip_address` VARCHAR(50),
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`post_id`) REFERENCES `blog_posts`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)      ON DELETE SET NULL,
+  INDEX `idx_post_status` (`post_id`, `status`)
 ) ENGINE=InnoDB;
 
 -- =============================================================
