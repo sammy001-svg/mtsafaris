@@ -4,16 +4,49 @@ require_once dirname(__DIR__) . '/includes/auth.php';
 require_once dirname(__DIR__) . '/includes/functions.php';
 requireAdmin();
 
-// Handle status toggle / delete
+// Handle status toggle / archive / delete
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf()) {
+    $id = (int)($_POST['id'] ?? 0);
+
     if (isset($_POST['toggle_status'])) {
-        $pkg = DB::row("SELECT is_active FROM packages WHERE id=?", [(int)$_POST['id']]);
-        if ($pkg) { DB::update('packages', ['is_active' => $pkg['is_active'] ? 0 : 1], ['id' => (int)$_POST['id']]); }
+        $pkg = DB::row("SELECT is_active FROM packages WHERE id=?", [$id]);
+        if ($pkg) { DB::update('packages', ['is_active' => $pkg['is_active'] ? 0 : 1], ['id' => $id]); }
         redirect(url('admin/packages.php'));
     }
-    if (isset($_POST['delete'])) {
-        DB::update('packages', ['is_active' => 0], ['id' => (int)$_POST['id']]);
+
+    // Archive — hides the package from the site but keeps the record.
+    if (isset($_POST['archive'])) {
+        DB::update('packages', ['is_active' => 0], ['id' => $id]);
+        auditLog('archive', 'packages', $id, [], []);
         flash('success', 'Package archived.');
+        redirect(url('admin/packages.php'));
+    }
+
+    // Permanent delete. Addons, pricing, reviews and wishlist entries are
+    // removed by ON DELETE CASCADE; inquiries keep their text with package_id
+    // nulled. bookings.package_id is ON DELETE RESTRICT, so a package with any
+    // booking is refused here rather than left to fail as a 500.
+    if (isset($_POST['delete'])) {
+        if (!canHardDelete()) {
+            flash('error', 'You do not have permission to permanently delete packages.');
+            redirect(url('admin/packages.php'));
+        }
+        $pkg = DB::row("SELECT * FROM packages WHERE id=?", [$id]);
+        if (!$pkg) {
+            flash('error', 'Package not found.');
+            redirect(url('admin/packages.php'));
+        }
+        $bookingCount = (int) DB::value("SELECT COUNT(*) FROM bookings WHERE package_id=?", [$id]);
+        if ($bookingCount > 0) {
+            flash('error', sprintf(
+                '“%s” has %d booking%s and cannot be deleted — archive it instead so the booking history stays intact.',
+                $pkg['title'], $bookingCount, $bookingCount === 1 ? '' : 's'
+            ));
+        } else {
+            DB::delete('packages', ['id' => $id]);
+            auditLog('delete', 'packages', $id, $pkg, []);
+            flash('success', sprintf('“%s” was permanently deleted.', $pkg['title']));
+        }
         redirect(url('admin/packages.php'));
     }
 }
@@ -144,11 +177,19 @@ $categories = getCategories();
                 <div class="table-actions">
                   <a href="<?= url('package-detail.php?slug='.h($pkg['slug'])) ?>" target="_blank" class="action-btn view" title="Preview"><i class="fas fa-eye"></i></a>
                   <a href="<?= url('admin/package-edit.php?id='.$pkg['id']) ?>" class="action-btn edit" title="Edit"><i class="fas fa-edit"></i></a>
-                  <form method="POST" style="display:inline" onsubmit="return confirm('Archive this package?')">
+                  <form method="POST" style="display:inline" onsubmit="return confirm('Archive this package? It stays in the database but is hidden from the site.')">
                     <?= csrfField() ?>
                     <input type="hidden" name="id" value="<?= $pkg['id'] ?>">
-                    <button type="submit" name="delete" class="action-btn delete" title="Archive"><i class="fas fa-archive"></i></button>
+                    <button type="submit" name="archive" class="action-btn" title="Archive"><i class="fas fa-archive"></i></button>
                   </form>
+                  <?php if (canHardDelete()): ?>
+                  <form method="POST" style="display:inline"
+                        onsubmit="return confirm('Permanently delete “<?= h(addslashes($pkg['title'])) ?>”?\n\nIts reviews, add-ons and wishlist entries go with it. This cannot be undone.')">
+                    <?= csrfField() ?>
+                    <input type="hidden" name="id" value="<?= $pkg['id'] ?>">
+                    <button type="submit" name="delete" class="action-btn delete" title="Delete permanently"><i class="fas fa-trash"></i></button>
+                  </form>
+                  <?php endif; ?>
                 </div>
               </td>
             </tr>

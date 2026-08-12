@@ -16,10 +16,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf()) {
         if ($row) DB::update('destinations', ['is_featured' => $row['is_featured'] ? 0 : 1], ['id' => $id]);
         redirect(url('admin/destinations.php'));
     }
-    if (isset($_POST['delete'])) {
+    // Archive — hides the destination from the site but keeps the record.
+    if (isset($_POST['archive'])) {
         DB::update('destinations', ['is_active' => 0], ['id' => $id]);
-        auditLog('delete', 'destinations', $id, [], []);
+        auditLog('archive', 'destinations', $id, [], []);
         flash('success', 'Destination archived.');
+        redirect(url('admin/destinations.php'));
+    }
+
+    // Permanent delete. packages.destination_id is ON DELETE SET NULL, so a
+    // delete would quietly orphan every package attached to it — refuse while
+    // any still point here, archived ones included, and make the admin reassign.
+    if (isset($_POST['delete'])) {
+        if (!canHardDelete()) {
+            flash('error', 'You do not have permission to permanently delete destinations.');
+            redirect(url('admin/destinations.php'));
+        }
+        $dest = DB::row("SELECT * FROM destinations WHERE id=?", [$id]);
+        if (!$dest) {
+            flash('error', 'Destination not found.');
+            redirect(url('admin/destinations.php'));
+        }
+        $pkgCount = (int) DB::value("SELECT COUNT(*) FROM packages WHERE destination_id=?", [$id]);
+        if ($pkgCount > 0) {
+            flash('error', sprintf(
+                '“%s” still has %d package%s assigned (archived ones included) — reassign or delete %s first.',
+                $dest['name'], $pkgCount, $pkgCount === 1 ? '' : 's', $pkgCount === 1 ? 'it' : 'them'
+            ));
+        } else {
+            DB::delete('destinations', ['id' => $id]);
+            auditLog('delete', 'destinations', $id, $dest, []);
+            flash('success', sprintf('“%s” was permanently deleted.', $dest['name']));
+        }
         redirect(url('admin/destinations.php'));
     }
 }
@@ -168,13 +196,23 @@ $countries = DB::rows("SELECT DISTINCT country FROM destinations ORDER BY countr
                   <a href="<?= url('destinations.php?slug=' . h($d['slug'])) ?>" class="btn-icon-admin" title="View on site" target="_blank">
                     <i class="fas fa-eye"></i>
                   </a>
-                  <form method="POST" style="display:inline" onsubmit="return confirm('Archive this destination?')">
+                  <form method="POST" style="display:inline" onsubmit="return confirm('Archive this destination? It stays in the database but is hidden from the site.')">
                     <?= csrfField() ?>
                     <input type="hidden" name="id" value="<?= $d['id'] ?>">
-                    <button type="submit" name="delete" class="btn-icon-admin btn-icon-danger" title="Archive">
+                    <button type="submit" name="archive" class="btn-icon-admin" title="Archive">
                       <i class="fas fa-archive"></i>
                     </button>
                   </form>
+                  <?php if (canHardDelete()): ?>
+                  <form method="POST" style="display:inline"
+                        onsubmit="return confirm('Permanently delete “<?= h(addslashes($d['name'])) ?>”?\n\nThis cannot be undone.')">
+                    <?= csrfField() ?>
+                    <input type="hidden" name="id" value="<?= $d['id'] ?>">
+                    <button type="submit" name="delete" class="btn-icon-admin btn-icon-danger" title="Delete permanently">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+                  <?php endif; ?>
                 </div>
               </td>
             </tr>
