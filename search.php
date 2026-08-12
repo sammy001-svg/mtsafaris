@@ -286,7 +286,7 @@ require_once 'includes/header.php';
           <?php if ($b['category_name']): ?><span class="blog-cat"><?= h($b['category_name']) ?></span><?php endif; ?>
           <h3 class="blog-title"><a href="<?= url('blog-detail.php?slug='.h($b['slug'])) ?>"><?= h($b['title']) ?></a></h3>
           <p style="font-size:.875rem;color:var(--clr-muted);line-height:1.6"><?= h(excerpt($b['excerpt']?:strip_tags($b['content']??''),120)) ?></p>
-          <div class="blog-meta"><span><i class="fas fa-calendar"></i> <?= formatDate($b['published_at']??$b['created_at'],'M j, Y') ?></span><span><i class="fas fa-eye"></i> <?= number_format($b['views']) ?></span></div>
+          <div class="blog-meta"><span><i class="fas fa-calendar"></i> <?= formatDate($b['published_at']??$b['created_at'],'M j, Y') ?></span><span><i class="fas fa-eye"></i> <?= number_format($b['view_count']) ?></span></div>
         </div>
       </article>
       <?php endforeach; ?>
