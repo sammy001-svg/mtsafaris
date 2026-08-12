@@ -9,15 +9,30 @@ function h(string $str): string {
     return htmlspecialchars($str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }
 
-// Retrieve a value from the settings table with an optional fallback.
-function getSetting(string $key, string $default = ''): string {
+// The whole settings table as key => value, loaded once per request.
+// Passing $key writes through to the cache so later reads stay in sync.
+function allSettings(?string $key = null, string $value = ''): array {
     static $cache = null;
     if ($cache === null) {
         $rows  = DB::rows("SELECT `key`, `value` FROM settings");
         $cache = [];
         foreach ($rows as $r) $cache[$r['key']] = $r['value'];
     }
-    return $cache[$key] ?? $default;
+    if ($key !== null) $cache[$key] = $value;
+    return $cache;
+}
+
+// Retrieve a value from the settings table with an optional fallback.
+function getSetting(string $key, string $default = ''): string {
+    return allSettings()[$key] ?? $default;
+}
+
+// Insert or update one settings row. `key` is the primary key, so a single
+// upsert covers both cases — the table has no `id` column to look up first.
+function setSetting(string $key, string $value): void {
+    DB::query("INSERT INTO `settings` (`key`, `value`) VALUES (?, ?)
+               ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)", [$key, $value]);
+    allSettings($key, $value);
 }
 
 function slug(string $text): string {

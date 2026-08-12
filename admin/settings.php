@@ -10,41 +10,47 @@ requireRole(['super_admin']);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verifyCsrf();
 
-    $fields = $_POST['settings'] ?? [];
-    $old    = [];
+    // Password boxes never echo the stored secret back to the browser, so a
+    // blank submission means "keep what is there", not "clear it".
+    $keepIfBlank = ['smtp_pass', 'stripe_secret'];
+
+    $current = allSettings();
+    $fields  = $_POST['settings'] ?? [];
+    $old     = [];
+    $new     = [];
+
     foreach ($fields as $key => $value) {
         $key = preg_replace('/[^a-z0-9_]/', '', strtolower($key));
-        if (!$key) continue;
-        $existing = DB::row("SELECT id, value FROM settings WHERE `key`=?", [$key]);
-        $old[$key] = $existing['value'] ?? '';
-        if ($existing) {
-            DB::update('settings', ['value' => trim($value)], ['key' => $key]);
-        } else {
-            DB::insert('settings', ['key' => $key, 'value' => trim($value)]);
-        }
+        if (!$key || is_array($value)) continue;
+
+        $value = trim((string) $value);
+        if ($value === '' && in_array($key, $keepIfBlank, true)) continue;
+
+        $old[$key] = $current[$key] ?? '';
+        $new[$key] = $value;
+        setSetting($key, $value);
     }
 
     // Logo / favicon uploads
-    foreach (['site_logo' => 'settings', 'site_favicon' => 'settings'] as $field => $dir) {
+    foreach (['site_logo', 'site_favicon'] as $field) {
         if (!empty($_FILES[$field]['tmp_name'])) {
-            $up = uploadImage($_FILES[$field], $dir);
+            $up = uploadImage($_FILES[$field], 'settings');
             if ($up) {
-                $ex = DB::row("SELECT id FROM settings WHERE `key`=?", [$field]);
-                if ($ex) DB::update('settings', ['value' => $up], ['key' => $field]);
-                else     DB::insert('settings', ['key' => $field, 'value' => $up]);
+                $old[$field] = $current[$field] ?? '';
+                $new[$field] = $up;
+                setSetting($field, $up);
             }
         }
     }
 
-    auditLog('update', 'settings', 0, $old, $fields);
+    auditLog('update', 'settings', 0, $old, $new);
     flash('success', 'Settings saved successfully.');
-    redirect(url('admin/settings.php' . (isset($_POST['_tab']) ? '#' . h($_POST['_tab']) : '')));
+    $tab = preg_replace('/[^a-z0-9_-]/', '', strtolower($_POST['_tab'] ?? ''));
+    redirect(url('admin/settings.php' . ($tab ? '#' . $tab : '')));
 }
 
 // Load all settings
-$settingsRaw = DB::rows("SELECT `key`, `value` FROM settings");
-$cfg = [];
-foreach ($settingsRaw as $s) $cfg[$s['key']] = $s['value'];
+$cfg = allSettings();
 function sv(string $key, string $default = ''): string {
     global $cfg;
     return $cfg[$key] ?? $default;
@@ -189,6 +195,7 @@ function sv(string $key, string $default = ''): string {
                 <div class="form-group" style="margin-bottom:0">
                   <label class="form-label">Maintenance Mode</label>
                   <label class="admin-toggle">
+                    <input type="hidden" name="settings[maintenance_mode]" value="0">
                     <input type="checkbox" name="settings[maintenance_mode]" value="1" <?= sv('maintenance_mode') ? 'checked' : '' ?>>
                     <span class="admin-toggle-slider"></span>
                     <span class="admin-toggle-label">Enable maintenance mode (public site shows "Coming Soon" page)</span>
@@ -435,6 +442,7 @@ function sv(string $key, string $default = ''): string {
                   <i class="fab fa-stripe" style="color:#635bff"></i> Stripe
                 </span>
                 <label class="admin-toggle" style="margin:0">
+                  <input type="hidden" name="settings[stripe_enabled]" value="0">
                   <input type="checkbox" name="settings[stripe_enabled]" value="1" <?= sv('stripe_enabled') ? 'checked' : '' ?>>
                   <span class="admin-toggle-slider"></span>
                   <span class="admin-toggle-label">Enabled</span>
@@ -461,6 +469,7 @@ function sv(string $key, string $default = ''): string {
                   <i class="fab fa-paypal" style="color:#003087"></i> PayPal
                 </span>
                 <label class="admin-toggle" style="margin:0">
+                  <input type="hidden" name="settings[paypal_enabled]" value="0">
                   <input type="checkbox" name="settings[paypal_enabled]" value="1" <?= sv('paypal_enabled') ? 'checked' : '' ?>>
                   <span class="admin-toggle-slider"></span>
                   <span class="admin-toggle-label">Enabled</span>
@@ -491,6 +500,7 @@ function sv(string $key, string $default = ''): string {
                   <i class="fas fa-building-columns" style="color:var(--clr-gold)"></i> Bank Transfer Details
                 </span>
                 <label class="admin-toggle" style="margin:0">
+                  <input type="hidden" name="settings[bank_enabled]" value="0">
                   <input type="checkbox" name="settings[bank_enabled]" value="1" <?= sv('bank_enabled', '1') ? 'checked' : '' ?>>
                   <span class="admin-toggle-slider"></span>
                   <span class="admin-toggle-label">Enabled</span>
