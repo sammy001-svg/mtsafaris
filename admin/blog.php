@@ -39,7 +39,7 @@ if ($search) { $where[] = '(bp.title LIKE ? OR bp.excerpt LIKE ?)'; $params[] = 
 if ($status) { $where[] = 'bp.status=?'; $params[] = $status; }
 if ($catId)  { $where[] = 'bp.category_id=?'; $params[] = $catId; }
 
-$sql = "SELECT bp.id, bp.title, bp.slug, bp.status, bp.is_featured, bp.views,
+$sql = "SELECT bp.id, bp.title, bp.slug, bp.status, bp.is_featured, bp.view_count,
                bp.created_at, bp.published_at,
                bc.name AS category_name,
                CONCAT(u.first_name,' ',u.last_name) AS author_name
@@ -51,7 +51,7 @@ $sql = "SELECT bp.id, bp.title, bp.slug, bp.status, bp.is_featured, bp.views,
 
 $result     = DB::paginate($sql, $params, $page, ADMIN_PER_PAGE);
 $posts      = $result['rows'];
-$categories = DB::rows("SELECT * FROM blog_categories ORDER BY sort_order");
+$categories = DB::rows("SELECT * FROM blog_categories ORDER BY name");
 $qs         = http_build_query(array_filter(['s' => $search, 'status' => $status, 'cat' => $catId]));
 ?>
 <!DOCTYPE html>
@@ -187,7 +187,7 @@ $qs         = http_build_query(array_filter(['s' => $search, 'status' => $status
                     </button>
                   </form>
                 </td>
-                <td class="td-secondary"><?= number_format($post['views']) ?></td>
+                <td class="td-secondary"><?= number_format($post['view_count']) ?></td>
                 <td class="td-secondary">
                   <?= $post['published_at'] ? formatDate($post['published_at'], 'M j, Y') : '—' ?>
                 </td>

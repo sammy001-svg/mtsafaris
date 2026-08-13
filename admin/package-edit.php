@@ -28,10 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description         = trim($_POST['description'] ?? '');
     // Rich text from the editor — sanitize against the whitelist, never store raw paste.
     $overview            = clean_html($_POST['overview'] ?? '');
-    $duration_days       = max(1, (int)($_POST['duration_days'] ?? 1));
-    $duration_nights     = max(0, (int)($_POST['duration_nights'] ?? 0));
-    $min_pax             = max(1, (int)($_POST['min_pax'] ?? 1));
-    $max_pax             = (int)($_POST['max_pax'] ?? 0) ?: null;
+    // These are all TINYINT UNSIGNED (0-255) in the schema — clamp so an
+    // oversized entry can't blow up the INSERT on a strict-mode server.
+    $duration_days       = min(255, max(1, (int)($_POST['duration_days']   ?? 1)));
+    $duration_nights     = min(255, max(0, (int)($_POST['duration_nights'] ?? 0)));
+    $min_pax             = min(255, max(1, (int)($_POST['min_pax']         ?? 1)));
+    // max_pax is NOT NULL DEFAULT 20 — blank means "use the default", not NULL.
+    $max_pax             = min(255, (int)($_POST['max_pax'] ?? 0) ?: 20);
+    if ($max_pax < $min_pax) $max_pax = $min_pax;
     $difficulty          = $_POST['difficulty'] ?? 'easy';
 
     // Pricing
@@ -50,9 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $departure_city      = trim($_POST['departure_city'] ?? '');
 
     // Availability
-    $availability        = max(0, (int)($_POST['availability'] ?? 20));
-    $seats_left          = strlen(trim($_POST['seats_left'] ?? '')) ? max(0, (int)$_POST['seats_left']) : null;
-    $sort_order          = max(0, (int)($_POST['sort_order'] ?? 0));
+    $availability        = min(255, max(0, (int)($_POST['availability'] ?? 20)));
+    $seats_left          = strlen(trim($_POST['seats_left'] ?? '')) ? min(255, max(0, (int)$_POST['seats_left'])) : null;
+    $sort_order          = min(65535, max(0, (int)($_POST['sort_order'] ?? 0)));
 
     // Media
     $video_url           = trim($_POST['video_url'] ?? '');

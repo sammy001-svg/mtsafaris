@@ -9,12 +9,11 @@ function h(string $str): string {
     return htmlspecialchars($str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }
 
-// Retrieve a value from the settings table with an optional fallback.
-// Reads every row once per request. A blank stored value falls back to the
-// default, so clearing a field in the admin does not blank the site.
+// The whole settings table as key => value, loaded once per request.
+// Passing $key writes through to the cache so later reads stay in sync.
 // Never fatal: if the table or connection is unavailable (fresh install,
-// database down) the default is returned instead.
-function getSetting(string $key, string $default = ''): string {
+// database down) the cache stays empty and every lookup returns its default.
+function allSettings(?string $key = null, string $value = ''): array {
     static $cache = null;
     if ($cache === null) {
         $cache = [];
@@ -26,8 +25,24 @@ function getSetting(string $key, string $default = ''): string {
             // Leave the cache empty; every lookup returns its default.
         }
     }
-    $val = $cache[$key] ?? '';
+    if ($key !== null) $cache[$key] = $value;
+    return $cache;
+}
+
+// Retrieve a value from the settings table with an optional fallback.
+// A blank stored value falls back to the default, so clearing a field in
+// the admin does not blank the corresponding text on the site.
+function getSetting(string $key, string $default = ''): string {
+    $val = allSettings()[$key] ?? '';
     return trim((string)$val) !== '' ? (string)$val : $default;
+}
+
+// Insert or update one settings row. `key` is the primary key, so a single
+// upsert covers both cases — the table has no `id` column to look up first.
+function setSetting(string $key, string $value): void {
+    DB::query("INSERT INTO `settings` (`key`, `value`) VALUES (?, ?)
+               ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)", [$key, $value]);
+    allSettings($key, $value);
 }
 
 // Contact details are editable from admin Settings, so the CONTACT_*

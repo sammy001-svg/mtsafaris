@@ -36,6 +36,12 @@ function isRole(string|array $roles): bool {
     return in_array($user['role'], $roles);
 }
 
+// Permanently destroying catalogue records is narrower than general admin
+// access — archiving stays open to every admin role.
+function canHardDelete(): bool {
+    return isRole(['super_admin', 'travel_manager']);
+}
+
 function requireLogin(string $redirect = '/portal/login.php'): void {
     if (!isLoggedIn()) {
         $_SESSION['login_redirect'] = currentUrl();

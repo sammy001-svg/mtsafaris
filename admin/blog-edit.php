@@ -7,7 +7,7 @@ requireAdmin();
 $id         = (int)($_GET['id'] ?? 0);
 $post       = $id ? DB::row("SELECT * FROM blog_posts WHERE id=?", [$id]) : null;
 $isEdit     = (bool)$post;
-$categories = DB::rows("SELECT * FROM blog_categories ORDER BY sort_order");
+$categories = DB::rows("SELECT * FROM blog_categories ORDER BY name");
 $errors     = [];
 $success    = false;
 
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'title'            => $title,
             'slug'             => $slug_val,
             'excerpt'          => $excerpt_text,
-            'content'          => $content,
+            'body'             => $content,
             'featured_image'   => $featured_image,
             'category_id'      => $category_id ?: null,
             'status'           => $status,
@@ -199,8 +199,8 @@ $tags = implode(', ', jd($p['tags'] ?? '[]', []));
             </div>
             <div style="padding:0">
               <div id="blogEditor" class="blog-editor-content" contenteditable="true"
-                   data-placeholder="Start writing your blog post…"><?= clean_html($p['content'] ?? '') ?></div>
-              <input type="hidden" name="content" id="contentField" value="<?= h(clean_html($p['content'] ?? '')) ?>">
+                   data-placeholder="Start writing your blog post…"><?= clean_html($p['body'] ?? '') ?></div>
+              <input type="hidden" name="content" id="contentField" value="<?= h(clean_html($p['body'] ?? '')) ?>">
             </div>
           </div>
 
