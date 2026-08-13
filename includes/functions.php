@@ -10,14 +10,35 @@ function h(string $str): string {
 }
 
 // Retrieve a value from the settings table with an optional fallback.
+// Reads every row once per request. A blank stored value falls back to the
+// default, so clearing a field in the admin does not blank the site.
+// Never fatal: if the table or connection is unavailable (fresh install,
+// database down) the default is returned instead.
 function getSetting(string $key, string $default = ''): string {
     static $cache = null;
     if ($cache === null) {
-        $rows  = DB::rows("SELECT `key`, `value` FROM settings");
         $cache = [];
-        foreach ($rows as $r) $cache[$r['key']] = $r['value'];
+        try {
+            foreach (DB::rows("SELECT `key`, `value` FROM settings") as $r) {
+                $cache[$r['key']] = $r['value'];
+            }
+        } catch (Throwable $e) {
+            // Leave the cache empty; every lookup returns its default.
+        }
     }
-    return $cache[$key] ?? $default;
+    $val = $cache[$key] ?? '';
+    return trim((string)$val) !== '' ? (string)$val : $default;
+}
+
+// Contact details are editable from admin Settings, so the CONTACT_*
+// constants are resolved here — after the database layer is available —
+// rather than being hardcoded in config.php. Defining them as constants
+// keeps every existing CONTACT_* reference in the templates working.
+if (!defined('CONTACT_EMAIL')) {
+    define('CONTACT_EMAIL',    getSetting('contact_email',    CONTACT_EMAIL_DEFAULT));
+    define('CONTACT_PHONE',    getSetting('contact_phone',    CONTACT_PHONE_DEFAULT));
+    define('CONTACT_WHATSAPP', getSetting('contact_whatsapp', CONTACT_WHATSAPP_DEFAULT));
+    define('CONTACT_ADDRESS',  getSetting('contact_address',  CONTACT_ADDRESS_DEFAULT));
 }
 
 function slug(string $text): string {

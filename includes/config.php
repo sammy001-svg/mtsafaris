@@ -69,10 +69,13 @@ define('RECAPTCHA_SITE',    getenv('RECAPTCHA_SITE')    ?: '');
 define('RECAPTCHA_SECRET',  getenv('RECAPTCHA_SECRET')  ?: '');
 
 // --- Contact ---
-define('CONTACT_EMAIL',    'info@mtsafaris.com');
-define('CONTACT_PHONE',    '+254 700 000 000');
-define('CONTACT_WHATSAPP', '+254700000000');
-define('CONTACT_ADDRESS',  'Westlands, Nairobi, Kenya');
+// Fallbacks only. The live CONTACT_* constants are defined in functions.php
+// from the settings table so the admin Settings module drives them; these
+// values apply when a setting is blank or the database is unreachable.
+define('CONTACT_EMAIL_DEFAULT',    'info@mtsafaris.com');
+define('CONTACT_PHONE_DEFAULT',    '+254 700 000 000');
+define('CONTACT_WHATSAPP_DEFAULT', '+254700000000');
+define('CONTACT_ADDRESS_DEFAULT',  'Westlands, Nairobi, Kenya');
 
 // --- Pagination ---
 define('PER_PAGE',       12);
