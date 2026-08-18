@@ -2242,3 +2242,31 @@ img[data-src] {
   text-align: left;
 }
 .rich-text th { background: var(--clr-light); font-weight: 700; color: var(--clr-primary); }
+
+/* ============================================================
+   DESTINATION GROUPS (parent country -> sub-destinations)
+   ============================================================ */
+.dest-group-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--clr-border);
+}
+.dest-group-title {
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  color: var(--clr-primary);
+  line-height: 1.2;
+}
+.dest-group-sub { font-size: .85rem; color: var(--clr-muted); margin-top: 4px; }
+.dest-subgroup-title {
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--clr-gold);
+  margin-bottom: 14px;
+}

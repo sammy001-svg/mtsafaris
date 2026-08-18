@@ -5,8 +5,11 @@ require_once __DIR__ . '/db.php';
 // STRING & SANITIZATION
 // =============================================================
 
-function h(string $str): string {
-    return htmlspecialchars($str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+// Accepts null so a nullable database column cannot fatal the page.
+// Under PHP 8 a declared `string` parameter throws a TypeError on null, and
+// most content columns (description, tagline, meta_*) are nullable.
+function h(?string $str): string {
+    return htmlspecialchars((string)$str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }
 
 // The whole settings table as key => value, loaded once per request.

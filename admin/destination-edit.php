@@ -9,12 +9,23 @@ $dest = $id ? DB::row("SELECT * FROM destinations WHERE id=?", [$id]) : null;
 if ($id && !$dest) redirect(url('admin/destinations.php'));
 
 $regions = DB::rows("SELECT * FROM regions ORDER BY name");
+
+// Possible parents: any active top-level destination, excluding this row.
+$parentOptions = DB::rows("SELECT id, name FROM destinations
+                          WHERE parent_id IS NULL AND is_active=1 AND id != ?
+                          ORDER BY sort_order ASC, name ASC", [$id]);
+
 $errors  = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verifyCsrf();
     $data = [
         'region_id'        => (int)($_POST['region_id'] ?? 0) ?: null,
+        // A destination may sit under a parent (Kenya -> Maasai Mara). Guard
+        // against selecting itself, which would orphan the row from the tree.
+        'parent_id'        => ((int)($_POST['parent_id'] ?? 0) && (int)$_POST['parent_id'] !== $id)
+                              ? (int)$_POST['parent_id'] : null,
+        'group_label'      => trim($_POST['group_label'] ?? '') ?: null,
         'name'             => trim($_POST['name'] ?? ''),
         'slug'             => trim($_POST['slug'] ?? ''),
         'country'          => trim($_POST['country'] ?? ''),
@@ -216,6 +227,28 @@ $gallery    = jd($dest['gallery'] ?? '[]', []);
                   <option value="<?= $r['id'] ?>" <?= ($dest['region_id'] ?? 0) == $r['id'] ? 'selected' : '' ?>><?= h($r['name']) ?></option>
                   <?php endforeach; ?>
                 </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Parent Destination</label>
+                  <select name="parent_id" class="form-control">
+                    <option value="">None &mdash; this is a top-level destination</option>
+                    <?php foreach ($parentOptions as $po): ?>
+                    <option value="<?= $po['id'] ?>" <?= ($dest['parent_id'] ?? 0) == $po['id'] ? 'selected' : '' ?>>
+                      <?= h($po['name']) ?>
+                    </option>
+                    <?php endforeach; ?>
+                  </select>
+                  <span class="form-hint">Choose a country to make this a sub-destination of it.</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Group Heading</label>
+                  <input type="text" name="group_label" class="form-control"
+                         value="<?= h($dest['group_label'] ?? '') ?>"
+                         placeholder="e.g. Safari, Beach Holidays">
+                  <span class="form-hint">Heading this sits under on the parent&rsquo;s page.</span>
+                </div>
               </div>
 
               <div class="form-group">

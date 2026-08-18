@@ -392,6 +392,18 @@ $allDests = DB::rows("SELECT d.*, r.name AS region_name, (SELECT COUNT(*) FROM p
                       " . ($region ? "AND r.slug=?" : "") . "
                       ORDER BY d.sort_order ASC, d.name ASC",
                       $region ? [$region] : []);
+
+// Build the parent -> group -> children tree for display. A destination with
+// no parent is a top-level entry; its children are nested under the heading
+// they belong to (Safari, Beach Holidays, ...).
+$destTree = [];
+foreach ($allDests as $d) { if ($d['parent_id'] === null) $destTree[$d['id']] = ['self' => $d, 'groups' => []]; }
+foreach ($allDests as $d) {
+    if ($d['parent_id'] === null) continue;
+    $pid = (int)$d['parent_id'];
+    if (!isset($destTree[$pid])) continue;   // parent filtered out by region
+    $destTree[$pid]['groups'][$d['group_label'] ?: 'Highlights'][] = $d;
+}
 ?>
 <section class="page-hero">
   <div class="container">
@@ -415,21 +427,41 @@ $allDests = DB::rows("SELECT d.*, r.name AS region_name, (SELECT COUNT(*) FROM p
       <?php endforeach; ?>
     </div>
 
-    <div class="grid-4">
-      <?php foreach ($allDests as $i => $dest): ?>
-      <a href="<?= url('destinations.php?slug='.h($dest['slug'])) ?>" class="destination-card" data-animate data-delay="<?= ($i%4)*80 ?>">
-        <img src="<?= h($dest['hero_image']?:'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&q=75') ?>" alt="<?= h($dest['name']) ?>" loading="lazy" decoding="async">
-        <div class="destination-card-info">
-          <div class="destination-card-country"><?= h($dest['region_name']??$dest['continent']??'') ?></div>
-          <div class="destination-card-name"><?= h($dest['name']) ?>, <?= h($dest['country']) ?></div>
-          <div class="destination-card-count"><?= $dest['package_count'] ?> package<?= $dest['package_count']!=1?'s':'' ?> available</div>
+    <?php if (!$destTree): ?>
+    <div style="text-align:center;padding:60px;color:var(--clr-muted)">No destinations found for this region.</div>
+    <?php endif; ?>
+
+    <?php $ci = 0; foreach ($destTree as $node): $parent = $node['self']; ?>
+    <div class="dest-group" style="margin-bottom:48px">
+
+      <div class="dest-group-head">
+        <div>
+          <h2 class="dest-group-title"><?= h($parent['name']) ?></h2>
+          <p class="dest-group-sub"><?= h($parent['region_name'] ?? $parent['country']) ?><?php if ($node['groups']): ?> &middot; <?= array_sum(array_map('count', $node['groups'])) ?> destinations<?php endif; ?></p>
         </div>
-      </a>
-      <?php endforeach; ?>
-      <?php if (!$allDests): ?>
-      <div style="grid-column:span 4;text-align:center;padding:60px;color:var(--clr-muted)">No destinations found for this region.</div>
+        <a href="<?= url('destinations.php?slug='.h($parent['slug'])) ?>" class="btn btn-outline btn-sm">
+          View <?= h($parent['name']) ?> <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <?php if (!$node['groups']): ?>
+        <?php // No sub-destinations - show the destination itself as a single card. ?>
+        <div class="grid-4">
+          <?php $dest = $parent; $ci++; include __DIR__ . '/includes/_destination-card.php'; ?>
+        </div>
+      <?php else: ?>
+        <?php foreach ($node['groups'] as $label => $kids): ?>
+        <div style="margin-bottom:24px">
+          <h3 class="dest-subgroup-title"><?= h($label) ?></h3>
+          <div class="grid-4">
+            <?php foreach ($kids as $dest): $ci++; include __DIR__ . '/includes/_destination-card.php'; endforeach; ?>
+          </div>
+        </div>
+        <?php endforeach; ?>
       <?php endif; ?>
+
     </div>
+    <?php endforeach; ?>
   </div>
 </section>
 <?php require_once 'includes/footer.php'; ?>
