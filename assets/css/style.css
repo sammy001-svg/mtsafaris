@@ -2275,7 +2275,10 @@ img[data-src] {
    DESTINATIONS MEGA MENU
    Wide panel listing every destination and sub-destination.
    ============================================================ */
-.dropdown-mega { position: static; }          /* panel is viewport-anchored, not trigger-anchored */
+/* Stays relative so the no-destinations fallback .dropdown-menu still anchors
+   to the trigger. .mega-menu is position:fixed and viewport-anchored, which
+   is unaffected by this (no ancestor sets a transform). */
+.dropdown-mega { position: relative; }
 
 .mega-menu {
   position: fixed;
@@ -2371,3 +2374,46 @@ img[data-src] {
 @media (max-width: 992px) {
   .mega-menu { display: none; }
 }
+
+/* Mobile drawer: collapsible destination groups */
+.mobile-dest-list { margin: 4px 0 8px; }
+.mobile-dest { border-bottom: 1px solid rgba(255,255,255,.08); }
+.mobile-dest > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 11px 14px 11px 28px;
+  font-size: .9rem;
+  color: rgba(255,255,255,.82);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.mobile-dest > summary::-webkit-details-marker { display: none; }
+.mobile-dest > summary::after {
+  content: '\f078';                       /* chevron-down */
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-size: .6rem;
+  transition: transform var(--transition);
+}
+.mobile-dest[open] > summary::after { transform: rotate(180deg); }
+.mobile-dest[open] > summary { color: #fff; }
+.mobile-dest-count {
+  margin-left: auto;
+  margin-right: 6px;
+  font-size: .68rem;
+  font-weight: 700;
+  color: var(--clr-primary);
+  background: var(--clr-gold);
+  border-radius: 20px;
+  padding: 1px 7px;
+}
+.mobile-dest a {
+  display: block;
+  padding: 9px 14px 9px 40px;
+  font-size: .85rem;
+  color: rgba(255,255,255,.62);
+}
+.mobile-dest a:hover { color: #fff; }
+.mobile-dest-all { font-weight: 600; color: var(--clr-gold) !important; }

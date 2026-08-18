@@ -189,6 +189,22 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
   <a href="<?= url() ?>"               class="<?= isActive('index.php') ?>">Home</a>
   <a href="<?= url('packages.php') ?>"   class="<?= isActive('packages.php') ?>">Tour Packages</a>
   <a href="<?= url('destinations.php') ?>" class="<?= isActive('destinations.php') ?>">Destinations</a>
+  <?php if ($navDestinations): ?>
+  <div class="mobile-dest-list">
+    <?php foreach ($navDestinations as $node): $p = $node['self']; ?>
+    <details class="mobile-dest">
+      <summary>
+        <?= h($p['name']) ?>
+        <?php if ($node['children']): ?><span class="mobile-dest-count"><?= count($node['children']) ?></span><?php endif; ?>
+      </summary>
+      <a class="mobile-dest-all" href="<?= url('destinations.php?slug=' . h($p['slug'])) ?>">All of <?= h($p['name']) ?></a>
+      <?php foreach ($node['children'] as $c): ?>
+      <a href="<?= url('destinations.php?slug=' . h($c['slug'])) ?>"><?= h($c['name']) ?></a>
+      <?php endforeach; ?>
+    </details>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
   <a href="<?= url('corporate.php') ?>"  class="<?= isActive('corporate.php') ?>">Corporate Travel</a>
   <a href="<?= url('blog.php') ?>"       class="<?= isActive('blog.php') ?>">Blog</a>
   <a href="<?= url('about.php') ?>"      class="<?= isActive('about.php') ?>">About Us</a>
