@@ -3,6 +3,11 @@
 -- copy instead of an empty "About" section. Only fills rows that are still
 -- blank, so anything written in the admin is never overwritten.
 -- Safe to re-run.
+--
+-- PREREQUISITE: run 2026_08_18_seed_destinations.sql first. This file reads
+-- parent_id and group_label, so on a database that still has the original
+-- `destinations` layout it fails with
+--     ERROR 1054 (42S22): Unknown column 'parent_id' in 'field list'
 -- ---------------------------------------------------------------------------
 
 UPDATE destinations SET description = CONCAT(

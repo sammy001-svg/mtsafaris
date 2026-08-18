@@ -1,5 +1,40 @@
 -- Destination tree from the MTS Website document.
 -- Idempotent: slug is UNIQUE, so re-running updates in place.
+--
+-- SELF-CONTAINED: this file adds the parent_id / group_label columns itself if
+-- they are not already present, so it can be imported on its own. Running it
+-- against a database that still has the original `destinations` layout used to
+-- fail on the very first statement with
+--     ERROR 1054 (42S22): Unknown column 'parent_id' in 'field list'
+-- and insert nothing at all.
+
+-- No DELIMITER / stored procedure is used below, on purpose: DELIMITER is a
+-- client-side directive and not every import tool honours it. Plain statements
+-- import reliably everywhere.
+
+SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'destinations'
+             AND COLUMN_NAME = 'parent_id');
+SET @s := IF(@c = 0,
+    'ALTER TABLE `destinations` ADD COLUMN `parent_id` INT UNSIGNED NULL AFTER `region_id`',
+    'DO 0');
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'destinations'
+             AND COLUMN_NAME = 'group_label');
+SET @s := IF(@c = 0,
+    'ALTER TABLE `destinations` ADD COLUMN `group_label` VARCHAR(80) NULL AFTER `parent_id`',
+    'DO 0');
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @c := (SELECT COUNT(*) FROM information_schema.STATISTICS
+           WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'destinations'
+             AND INDEX_NAME = 'idx_dest_parent');
+SET @s := IF(@c = 0,
+    'ALTER TABLE `destinations` ADD INDEX `idx_dest_parent` (`parent_id`)',
+    'DO 0');
+PREPARE stmt FROM @s; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 INSERT INTO destinations (name, slug, country, region_id, parent_id, group_label, hero_image, is_active, is_featured, sort_order)
 VALUES ('Kenya', 'kenya', 'Kenya', 1, NULL, NULL, 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1200&q=80', 1, 1, 10)

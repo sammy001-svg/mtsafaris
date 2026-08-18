@@ -40,6 +40,17 @@ function getSetting(string $key, string $default = ''): string {
     return trim((string)$val) !== '' ? (string)$val : $default;
 }
 
+// A repeatable settings group (team members, milestones, ...) stored as a JSON
+// array in one settings row. Returns $default when unset, blank or malformed,
+// so an editable list always falls back to the built-in content rather than
+// rendering an empty section.
+function getSettingList(string $key, array $default = []): array {
+    $raw = getSetting($key, '');
+    if (trim($raw) === '') return $default;
+    $arr = json_decode($raw, true);
+    return (is_array($arr) && $arr !== []) ? $arr : $default;
+}
+
 // Insert or update one settings row. `key` is the primary key, so a single
 // upsert covers both cases — the table has no `id` column to look up first.
 function setSetting(string $key, string $value): void {
