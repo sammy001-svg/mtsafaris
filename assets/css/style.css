@@ -1543,6 +1543,17 @@ img[data-src] {
   grid-row: span 2;
   grid-column: span 2;
 }
+/* .destination-card carries aspect-ratio: 3/4, which is right for the
+   standalone card grids but wrong here: inside this masonry the row tracks
+   define the height. Left alone the ratio wins over the row span - a
+   2-column featured card resolves to width*4/3 (~870px) instead of the
+   456px its 2 rows reserve, so it spills over the cards below it and over
+   the section button. Neutralise the ratio and fill the grid area instead. */
+.dest-masonry-grid > * {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 0;
+}
 
 /* Package detail gallery thumbnails */
 .pkg-gallery-thumbs {
