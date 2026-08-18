@@ -61,6 +61,9 @@
     <a href="<?= url('admin/banners.php') ?>" <?= isActive('banners.php') === 'active' ? 'class="active"' : '' ?>>
       <i class="fas fa-images"></i> Banners
     </a>
+    <a href="<?= url('admin/about.php') ?>" <?= isActive('about.php') === 'active' ? 'class="active"' : '' ?>>
+      <i class="fas fa-address-card"></i> About Page
+    </a>
 
     <div class="nav-section">Marketing</div>
     <a href="<?= url('admin/coupons.php') ?>" <?= isActive('coupons.php') === 'active' ? 'class="active"' : '' ?>>
