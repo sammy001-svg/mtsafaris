@@ -6,6 +6,7 @@ $pageTitle       = 'Discover Exceptional Travel Experiences Worldwide';
 $pageDescription = 'MT Safaris — East Africa\'s premier travel company. Corporate travel, luxury safaris, holiday packages, honeymoon escapes, and adventure tours.';
 $headerClass     = 'transparent';
 
+$heroBanners          = getBanners('home_hero');
 $featuredPackages     = getFeaturedPackages(6);
 $featuredDestinations = getFeaturedDestinations(8);
 $testimonials         = getTestimonials(6);
@@ -26,15 +27,21 @@ require_once 'includes/header.php';
   <!-- Slideshow -->
   <div class="hero-media" style="position:absolute;inset:0;overflow:hidden">
     <?php
-    $heroSlides = [
-      ['https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1920&q=85', 'Masai Mara Safari'],
-      ['https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=1920&q=85', 'Serengeti Wildlife'],
-      ['https://images.unsplash.com/photo-1504432842672-1a79f78e4084?w=1920&q=85', 'Zanzibar Beach'],
-      ['https://images.unsplash.com/photo-1589553416260-f586c8f1514f?w=1920&q=85', 'Mount Kilimanjaro'],
-    ];
+    // Slides come from admin > Banners & Sliders (position "home_hero").
+    // The hardcoded set below is only a fallback for when none are configured.
+    if ($heroBanners) {
+      $heroSlides = array_map(fn($b) => [$b['image'], $b['title']], $heroBanners);
+    } else {
+      $heroSlides = [
+        ['https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1920&q=85', 'Masai Mara Safari'],
+        ['https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=1920&q=85', 'Serengeti Wildlife'],
+        ['https://images.unsplash.com/photo-1504432842672-1a79f78e4084?w=1920&q=85', 'Zanzibar Beach'],
+        ['https://images.unsplash.com/photo-1589553416260-f586c8f1514f?w=1920&q=85', 'Mount Kilimanjaro'],
+      ];
+    }
     foreach ($heroSlides as $i => $slide): ?>
     <div class="hero-slide<?= $i === 0 ? ' active' : '' ?>" data-index="<?= $i ?>">
-      <img src="<?= $slide[0] ?>" alt="<?= $slide[1] ?>" <?= $i === 0 ? 'loading="eager" fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"' ?>>
+      <img src="<?= h($slide[0]) ?>" alt="<?= h($slide[1]) ?>" <?= $i === 0 ? 'loading="eager" fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"' ?>>
     </div>
     <?php endforeach; ?>
   </div>
@@ -53,17 +60,31 @@ require_once 'includes/header.php';
         <i class="fas fa-star"></i> <?= h(getSetting('hero_badge', '#1 Rated Travel Company in East Africa')) ?>
       </div>
 
+      <?php
+      // The first active home_hero banner supplies the headline, subtitle and
+      // primary call to action. Each field falls back independently, so a
+      // banner that only sets an image still leaves the rest of the hero alone.
+      $heroBanner   = $heroBanners[0] ?? [];
+      $bannerTitle  = trim($heroBanner['title']    ?? '');
+      $bannerSub    = trim($heroBanner['subtitle'] ?? '');
+      $bannerCtaTxt = trim($heroBanner['cta_text'] ?? '');
+      $bannerCtaUrl = trim($heroBanner['cta_url']  ?? '');
+      ?>
       <h1 class="hero-title anim-up" style="animation-delay:.1s">
+        <?php if ($bannerTitle): ?>
+        <?= h($bannerTitle) ?>
+        <?php else: ?>
         Discover <span>Exceptional</span><br>Travel Experiences<br>Worldwide
+        <?php endif; ?>
       </h1>
 
       <p class="hero-subtitle anim-up" style="animation-delay:.2s">
-        <?= h(getSetting('hero_subtitle', 'From iconic African safaris to luxury island retreats, corporate travel solutions, and bespoke adventures — we craft journeys that inspire and endure.')) ?>
+        <?= h($bannerSub ?: getSetting('hero_subtitle', 'From iconic African safaris to luxury island retreats, corporate travel solutions, and bespoke adventures — we craft journeys that inspire and endure.')) ?>
       </p>
 
       <div class="hero-actions anim-up" style="animation-delay:.3s">
-        <a href="<?= url('packages.php') ?>" class="btn btn-gold btn-lg">
-          <i class="fas fa-compass"></i> Explore Packages
+        <a href="<?= safeUrl($bannerCtaUrl, url('packages.php')) ?>" class="btn btn-gold btn-lg">
+          <i class="fas fa-compass"></i> <?= h($bannerCtaTxt ?: 'Explore Packages') ?>
         </a>
         <a href="<?= url('contact.php#quote') ?>" class="btn btn-outline-white btn-lg">
           <i class="fas fa-paper-plane"></i> Request a Quote

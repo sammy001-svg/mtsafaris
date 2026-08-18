@@ -408,6 +408,30 @@ function setting(string $key, string $default = ''): string {
 // CATEGORIES
 // =============================================================
 
+// Escape a URL for an href/src, rejecting script-bearing schemes.
+// h() alone is not enough: it escapes quotes but leaves "javascript:" intact,
+// so an admin-entered link would still execute on click.
+function safeUrl(?string $url, string $fallback = '#'): string {
+    $url = trim((string)$url);
+    if ($url === '') return h($fallback);
+    $ok = preg_match('#^(https?:)?//#i', $url)              // absolute / protocol-relative
+       || preg_match('#^(mailto:|tel:|/|\#|\.{0,2}/)#i', $url)  // mail, phone, site-relative
+       || !preg_match('#^[a-z][a-z0-9+.-]*:#i', $url);      // no scheme at all
+    return h($ok ? $url : $fallback);
+}
+
+// Active banners for one slot (home_hero, etc.), in admin sort order.
+// Returns [] when none are configured so callers can fall back to defaults.
+function getBanners(string $position = 'home_hero', int $limit = 10): array {
+    try {
+        return DB::rows("SELECT * FROM banners
+                         WHERE position = ? AND is_active = 1
+                         ORDER BY sort_order ASC, id ASC LIMIT ?", [$position, $limit]);
+    } catch (Throwable $e) {
+        return [];
+    }
+}
+
 function getCategories(): array {
     return DB::rows("SELECT * FROM categories WHERE is_active = 1 ORDER BY sort_order ASC");
 }
