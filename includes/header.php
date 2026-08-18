@@ -5,6 +5,7 @@ require_once __DIR__ . '/functions.php';
 
 $user        = currentUser();
 $categories  = getCategories();
+$navDestinations = getDestinationMenu();
 $headerClass = $headerClass ?? 'transparent';
 $headerData  = $headerClass === 'transparent' ? 'data-transparent' : '';
 
@@ -79,17 +80,37 @@ $jsV  = filemtime(APP_PATH . '/assets/js/main.js');
           </div>
         </div>
 
-        <div class="dropdown">
+        <div class="dropdown dropdown-mega">
           <a href="<?= url('destinations.php') ?>" class="nav-link <?= isActive('destinations.php') ?>">
             Destinations <i class="fas fa-chevron-down" style="font-size:.65rem;margin-left:3px"></i>
           </a>
-          <div class="dropdown-menu">
-            <a href="<?= url('destinations.php?region=africa') ?>"><i class="fas fa-map-marker-alt"></i> Africa</a>
-            <a href="<?= url('destinations.php?region=middle-east') ?>"><i class="fas fa-map-marker-alt"></i> Middle East</a>
-            <a href="<?= url('destinations.php?region=europe') ?>"><i class="fas fa-map-marker-alt"></i> Europe</a>
-            <a href="<?= url('destinations.php?region=asia') ?>"><i class="fas fa-map-marker-alt"></i> Asia</a>
-            <a href="<?= url('destinations.php?region=indian-ocean') ?>"><i class="fas fa-map-marker-alt"></i> Indian Ocean</a>
+          <?php if ($navDestinations): ?>
+          <div class="mega-menu">
+            <div class="mega-menu-inner">
+              <?php foreach ($navDestinations as $node): $p = $node['self']; ?>
+              <div class="mega-col">
+                <a class="mega-col-title" href="<?= url('destinations.php?slug=' . h($p['slug'])) ?>">
+                  <i class="fas fa-map-marker-alt"></i> <?= h($p['name']) ?>
+                </a>
+                <?php if ($node['children']): ?>
+                <ul class="mega-sub">
+                  <?php foreach ($node['children'] as $c): ?>
+                  <li><a href="<?= url('destinations.php?slug=' . h($c['slug'])) ?>"><?= h($c['name']) ?></a></li>
+                  <?php endforeach; ?>
+                </ul>
+                <?php endif; ?>
+              </div>
+              <?php endforeach; ?>
+            </div>
+            <div class="mega-menu-foot">
+              <a href="<?= url('destinations.php') ?>"><i class="fas fa-globe"></i> Browse all destinations</a>
+            </div>
           </div>
+          <?php else: ?>
+          <div class="dropdown-menu">
+            <a href="<?= url('destinations.php') ?>"><i class="fas fa-globe"></i> All Destinations</a>
+          </div>
+          <?php endif; ?>
         </div>
 
         <a href="<?= url('corporate.php') ?>" class="nav-link <?= isActive('corporate.php') ?>">Corporate</a>

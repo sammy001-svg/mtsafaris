@@ -342,6 +342,34 @@ function getFeaturedDestinations(int $limit = 8): array {
                      ORDER BY sort_order ASC LIMIT ?", [$limit]);
 }
 
+// Parent destinations with their sub-destinations, for the header mega menu.
+// Cached per request because the header renders on every page. Never fatal:
+// a missing table or column returns an empty menu rather than a broken site.
+function getDestinationMenu(): array {
+    static $cache = null;
+    if ($cache !== null) return $cache;
+
+    try {
+        $rows = DB::rows("SELECT id, name, slug, parent_id, group_label
+                          FROM destinations
+                          WHERE is_active = 1
+                          ORDER BY sort_order ASC, name ASC");
+    } catch (Throwable $e) {
+        return $cache = [];
+    }
+
+    $tree = [];
+    foreach ($rows as $r) {
+        if ($r['parent_id'] === null) $tree[(int)$r['id']] = ['self' => $r, 'children' => []];
+    }
+    foreach ($rows as $r) {
+        if ($r['parent_id'] === null) continue;
+        $pid = (int)$r['parent_id'];
+        if (isset($tree[$pid])) $tree[$pid]['children'][] = $r;
+    }
+    return $cache = $tree;
+}
+
 function getDestinationBySlug(string $slug): ?array {
     return DB::row("SELECT d.*, r.name AS region_name FROM destinations d
                     LEFT JOIN regions r ON d.region_id = r.id

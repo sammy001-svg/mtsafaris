@@ -2270,3 +2270,104 @@ img[data-src] {
   color: var(--clr-gold);
   margin-bottom: 14px;
 }
+
+/* ============================================================
+   DESTINATIONS MEGA MENU
+   Wide panel listing every destination and sub-destination.
+   ============================================================ */
+.dropdown-mega { position: static; }          /* panel is viewport-anchored, not trigger-anchored */
+
+.mega-menu {
+  position: fixed;
+  top: var(--header-h);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: min(1180px, calc(100vw - 32px));
+  max-height: calc(100vh - var(--header-h) - 24px);
+  overflow-y: auto;
+  background: #fff;
+  border-radius: var(--radius-md);
+  border-top: 3px solid var(--clr-gold);
+  box-shadow: var(--shadow-xl);
+  padding: 26px 28px 12px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
+  z-index: 300;
+}
+/* Bridges the gap between the nav link and the panel so moving the pointer
+   down does not drop the hover and close the menu. */
+.mega-menu::before {
+  content: '';
+  position: absolute;
+  top: -16px; left: 0; right: 0;
+  height: 16px;
+}
+.dropdown-mega:hover .mega-menu,
+.dropdown-mega:focus-within .mega-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Uneven column heights pack better with multi-column than with grid. */
+.mega-menu-inner { columns: 4; column-gap: 30px; }
+@media (max-width: 1100px) { .mega-menu-inner { columns: 3; } }
+@media (max-width: 860px)  { .mega-menu-inner { columns: 2; } }
+
+.mega-col {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 20px;
+  display: inline-block;   /* keeps Safari from splitting the block */
+  width: 100%;
+}
+.mega-col-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--ff-head);
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--clr-primary);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--clr-border);
+}
+.mega-col-title i { color: var(--clr-gold); font-size: .8rem; }
+.mega-col-title:hover { color: var(--clr-gold); }
+
+.mega-sub { list-style: none; margin: 0; padding: 0; }
+.mega-sub li { margin: 0; }
+.mega-sub a {
+  display: block;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  font-size: .82rem;
+  color: var(--clr-muted);
+  transition: all var(--transition);
+}
+.mega-sub a:hover { background: var(--clr-light); color: var(--clr-primary); }
+
+.mega-menu-foot {
+  border-top: 1px solid var(--clr-border);
+  margin-top: 4px;
+  padding-top: 12px;
+  text-align: center;
+}
+.mega-menu-foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--clr-primary);
+}
+.mega-menu-foot a:hover { color: var(--clr-gold); }
+
+/* The mega menu is a desktop affordance; the mobile drawer lists
+   destinations inline instead. */
+@media (max-width: 992px) {
+  .mega-menu { display: none; }
+}
