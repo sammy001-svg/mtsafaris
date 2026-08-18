@@ -1532,6 +1532,11 @@ img[data-src] {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 220px);
+  /* Any card beyond the explicit rows lands in an implicit row. Without a
+     height here those rows are auto-sized, and because the cards size from
+     an absolutely-positioned caption and a height:100% image they collapse
+     to zero and stack on top of the row above. */
+  grid-auto-rows: 220px;
   gap: 16px;
 }
 .dest-masonry-grid .dest-featured {
@@ -1638,7 +1643,11 @@ img[data-src] {
   /* Destinations masonry → 2-col (remove featured span) */
   .dest-masonry-grid {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 200px);
+    /* The featured card loses its 2x2 span here, so let rows be created on
+       demand. A fixed row count would leave an empty row whenever the number
+       of destinations does not divide evenly. */
+    grid-template-rows: none;
+    grid-auto-rows: 200px;
   }
   .dest-masonry-grid .dest-featured,
   .dest-masonry-grid > :first-child {

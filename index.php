@@ -373,10 +373,12 @@ require_once 'includes/header.php';
       </a>
       <?php if ($i === 0): break; endif; ?>
       <?php endforeach; ?>
-      <?php foreach (array_slice($featuredDestinations, 1, 6) as $i => $dest):
+      <?php // 4 cards + the 2x2 featured card fills the 4-col x 2-row grid exactly.
+      foreach (array_slice($featuredDestinations, 1, 4) as $i => $dest):
         $img = $dest['hero_image'] ?: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80';
       ?>
       <a href="<?= url('destinations.php?slug=' . h($dest['slug'])) ?>"
+         class="destination-card"
          style="border-radius:16px;overflow:hidden;display:block;position:relative">
         <img src="<?= h($img) ?>" alt="<?= h($dest['name']) ?>" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transition:transform .5s ease">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(12,38,20,.85) 0%,transparent 55%)"></div>
